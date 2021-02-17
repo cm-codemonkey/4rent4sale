@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost:3306
--- Tiempo de generación: 17-02-2021 a las 17:00:04
+-- Tiempo de generación: 17-02-2021 a las 17:51:54
 -- Versión del servidor: 10.0.38-MariaDB-0+deb8u1
 -- Versión de PHP: 7.3.18
 
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de datos: `terecasillas`
+-- Base de datos: `4rent4sale`
 --
 
 -- --------------------------------------------------------
@@ -98,8 +98,7 @@ CREATE TABLE `vkye_metadata` (
 --
 
 INSERT INTO `vkye_metadata` (`id_metadata`, `description`, `keywords`) VALUES
-(1, 'Real Estate Tulum Find in our listings the best properties homes, houses, condos, apartments, developments, land, lots for sale in Tulum Mexico Experts in Tulum Real Estate property investment. Agencia bienes raí­ces Tulum, Inmobiliarias en Tulum, Terrenos Tulum Propiedades departamentos, casas, villas, lotes en venta', 'tulum real estate, tulum mexico real estate, real estate tulum, real estate tulum mexico, homes for sale in tulum, terrenos en tulum, tulum property for sale, bienes raíces tulum quintana roo, agencias inmobiliarias en tulum, houses apartments land lots condos for sale tulum, tulum properties for sale, casas en venta en tulum, desarrollos inmobiliarios tulum, propiedades tulum, inmuebles en tulum, tulum real estate agency, tulum real estate agent, tulum realty, tulum brokers, tulum experts, real estate experts, tulum realtors, aldea zama, aldea zama tulum, region 15 tulum, terrenos region 15 tulum, hectáreas tulum, condos region 15 tulum, region 8 tulum, terrenos region 8 tulum, hectáreas region 15 tulum, condo aldea zama, lifestyle tulum, estilo de vida tulum, living in tulum'),
-(2, 'Real Estate Tulum Find in our listings the best properties homes, houses, condos, apartments, developments, land, lots for sale in Tulum Mexico Experts in Tulum Real Estate property investment. Agencia bienes raÃ­ces Tulum, Inmobiliarias en Tulum, Terrenos Tulum Propiedades departamentos, casas, villas, lotes en venta', 'tulum real estate, tulum mexico real estate, real estate tulum, real estate tulum mexico, homes for sale in tulum, terrenos en tulum, tulum property for sale, bienes raÃ­ces tulum quintana roo, agencias inmobiliarias en tulum, houses apartments land lots condos for sale tulum, tulum properties for sale, casas en venta en tulum, desarrollos inmobiliarios tulum, propiedades tulum, inmuebles en tulum, tulum real estate agency, tulum real estate agent, tulum realty, tulum brokers, tulum experts, real estate experts, tulum realtors, aldea zama, aldea zama tulum, region 15 tulum, terrenos region 15 tulum, hectÃ¡reas tulum, condos region 15 tulum, region 8 tulum, terrenos region 8 tulum, hectÃ¡reas region 15 tulum, condo aldea zama, lifestyle tulum, estilo de vida tulum, living in tulum');
+(1, 'Real Estate Tulum Find in our listings the best properties homes, houses, condos, apartments, developments, land, lots for sale in Tulum Mexico Experts in Tulum Real Estate property investment. Agencia bienes raí­ces Tulum, Inmobiliarias en Tulum, Terrenos Tulum Propiedades departamentos, casas, villas, lotes en venta', 'tulum real estate, tulum mexico real estate, real estate tulum, real estate tulum mexico, homes for sale in tulum, terrenos en tulum, tulum property for sale, bienes raíces tulum quintana roo, agencias inmobiliarias en tulum, houses apartments land lots condos for sale tulum, tulum properties for sale, casas en venta en tulum, desarrollos inmobiliarios tulum, propiedades tulum, inmuebles en tulum, tulum real estate agency, tulum real estate agent, tulum realty, tulum brokers, tulum experts, real estate experts, tulum realtors, aldea zama, aldea zama tulum, region 15 tulum, terrenos region 15 tulum, hectáreas tulum, condos region 15 tulum, region 8 tulum, terrenos region 8 tulum, hectáreas region 15 tulum, condo aldea zama, lifestyle tulum, estilo de vida tulum, living in tulum');
 
 -- --------------------------------------------------------
 
@@ -139,7 +138,7 @@ CREATE TABLE `vkye_properties` (
 --
 
 INSERT INTO `vkye_properties` (`id_property`, `title`, `description`, `date`, `price`, `coin`, `delivery`, `rooms`, `rooms_number_min`, `rooms_number_max`, `m2`, `teaser`, `type`, `status`, `pdf`, `cover`, `multiple`, `id_location`, `id_category`, `subcategory`, `id_property_parent`, `popular`, `seo_keywords`, `seo_description`) VALUES
-(1, 'Prueba', '{\"es\":\"&lt;p&gt;Texto de prueba&lt;\\/p&gt;\",\"en\":\"&lt;p&gt;Test text&lt;\\/p&gt;\"}', '2021-02-11', 100, 'mxn', '{\"es\":\"Se entrega en diciembre del 2021\",\"en\":\"AA\"}', '', 0, 0, '', '{\"es\":\"Ultimas 5 unidades disponibles\",\"en\":\"BB\"}', '1', '1', NULL, 'dZaJH8SXjqODjEXXm2l6BqwzgSCT33b8.png', 0, 1, NULL, '1', NULL, NULL, '', '');
+(1, 'Mi proiedad', '{\"es\":\"&lt;p&gt;Texto de prueba&lt;\\/p&gt;\",\"en\":\"&lt;p&gt;Test text&lt;\\/p&gt;\"}', '2021-02-11', 100, 'mxn', '{\"es\":\"Se entrega en diciembre del 2021\",\"en\":\"AA\"}', '', 0, 0, '', '{\"es\":\"Ultimas 5 unidades disponibles\",\"en\":\"BB\"}', '1', '1', NULL, 'dZaJH8SXjqODjEXXm2l6BqwzgSCT33b8.png', 0, 1, NULL, '1', NULL, NULL, '', '');
 
 -- --------------------------------------------------------
 
@@ -233,7 +232,7 @@ CREATE TABLE `vkye_properties_images` (
 --
 
 INSERT INTO `vkye_properties_images` (`id_image`, `title`, `id_property`) VALUES
-(2, 'pwkxG397ap8MGCFcDfPQr3jjkbYK88pL.png', 1);
+(1, 'pwkxG397ap8MGCFcDfPQr3jjkbYK88pL.png', 1);
 
 -- --------------------------------------------------------
 
@@ -301,7 +300,7 @@ CREATE TABLE `vkye_slider_home` (
 --
 
 INSERT INTO `vkye_slider_home` (`id_image`, `title`) VALUES
-(2, 'qmbTqV4tOLDrBFZYhsir34hHLT5W8bnl.png');
+(1, 'qmbTqV4tOLDrBFZYhsir34hHLT5W8bnl.png');
 
 -- --------------------------------------------------------
 
@@ -336,7 +335,7 @@ CREATE TABLE `vkye_website_users` (
 --
 
 INSERT INTO `vkye_website_users` (`id_website_user`, `username`, `password`, `email`, `level`, `media`) VALUES
-(1, 'terecasillas', '1f00a9fd943ed87b69c047e8437c96f4b76d26db:skE6oXQ1vidRC7N4bXyxSKLmVCloibCbOLmB0md37Q1Ohrz7kzcmkwpltRsBnDn8', 'webmaster@localhost', '10', '');
+(1, 'admin', '1f00a9fd943ed87b69c047e8437c96f4b76d26db:skE6oXQ1vidRC7N4bXyxSKLmVCloibCbOLmB0md37Q1Ohrz7kzcmkwpltRsBnDn8', 'admin@localhost', '10', '');
 
 --
 -- Índices para tablas volcadas
@@ -499,7 +498,7 @@ ALTER TABLE `vkye_properties_features_fk`
 -- AUTO_INCREMENT de la tabla `vkye_properties_images`
 --
 ALTER TABLE `vkye_properties_images`
-  MODIFY `id_image` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_image` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `vkye_properties_interested`
@@ -523,7 +522,7 @@ ALTER TABLE `vkye_services`
 -- AUTO_INCREMENT de la tabla `vkye_slider_home`
 --
 ALTER TABLE `vkye_slider_home`
-  MODIFY `id_image` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_image` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `vkye_subscriptions`
