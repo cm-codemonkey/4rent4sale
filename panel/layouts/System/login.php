@@ -14,16 +14,6 @@ $this->dependencies->getDependencies([
     <h1>Bienvenido</h1>
 
     <form id="login--cpanel" autocomplete="off">
-        <!--<figure class="logotype">
-            <img src="{$path.images}logotype.png" alt=""/>
-        </figure>-->
-
-        <div class="login-logo-content">
-            <figure>
-                <img src="{$path.images}logo_type_2_white.svg" alt="">
-            </figure>
-        </div>
-
         <div class="message"></div>
 
         <div class="login-input-group">
@@ -40,9 +30,6 @@ $this->dependencies->getDependencies([
         </div>
 
         <button type="submit" data-ripple="true">Login</button>
-        <div class="links">
-            <p>Panel de administracion</p>
-        </div>
     </form>
 
     <div class="content-bubbles">

@@ -13,8 +13,8 @@
         <div class="submenu" data-target="configurations">
             <a href="index.php?c=configurations&m=metadata" data-target="metadata"><i class="material-icons">code</i>Metadata</a>
             <a href="index.php?c=properties&m=locations" data-target="locations"><i class="material-icons">location_on</i>Ubicaciónes</a>
-            <!-- <a href="index.php?c=properties&m=categories" data-target="categories"><i class="material-icons">view_module</i>Categorias</a> -->
-            <!-- <a href="index.php?c=properties&m=features" data-target="features"><i class="material-icons">dialpad</i>Caract. y Emenidades</a> -->
+            <a href="index.php?c=properties&m=categories" data-target="categories"><i class="material-icons">view_module</i>Categorias</a>
+            <a href="index.php?c=properties&m=features" data-target="features"><i class="material-icons">dialpad</i>Caract. y Emenidades</a>
             <a href="index.php?c=configurations&m=about" data-target="about"><i class="material-icons">insert_emoticon</i>Acerca de Nosotros</a>
             <a href="index.php?c=configurations&m=buy" data-target="buy"><i class="material-icons">card_travel</i>Proceso de Compra</a>
             <a href="index.php?c=configurations&m=contact" data-target="contact"><i class="material-icons">contacts</i>Contacto</a>
