@@ -11,7 +11,6 @@
         </div>
         <ul>
             <li><a href="/" data-ripple="2">{$lang.header_home}</a></li>
-            <li><a href="/about" data-ripple="2">{$lang.header_about_us}</a></li>
             <li>
                 <a href="" data-ripple="2"><strong>{$lang.header_properties}</strong></a>
                 <div class="dropdown">
@@ -23,6 +22,7 @@
             </li>
             <li><a href="/buy" data-ripple="2">{$lang.header_buy_process}</a></li>
             <li><a href="/blog" data-ripple="2">{$lang.header_tulum_style}</a></li>
+            <li><a href="/about" data-ripple="2">{$lang.header_about_us}</a></li>
             <li><a href="/contact" data-ripple="2">{$lang.header_contact}</a></li>
             <li>
                 <a href="" data-ripple="2">{$lang.language}</a>
