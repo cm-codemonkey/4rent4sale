@@ -2,7 +2,7 @@
 <div class="container">
     <figure id="logotype">
         <a href="/">
-            <img src="{$path.images}logo_type_1_white.svg" alt="logotype"/>
+            <img src="{$path.images}logo_type_1_white.png" alt="logotype"/>
         </a>
     </figure>
     <nav class="main-menu">
