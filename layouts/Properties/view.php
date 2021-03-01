@@ -84,7 +84,7 @@ $this->dependencies->getDependencies([
                 <div class="button-action-property">
                     <div class="item whatsapp">
                         <span>{$lang.share_by_whatsapp}</span>
-                        <a href="whatsapp://send?text=Propiedades Venta Tulum Realty - {$share}" class="btn md--btn-circle" data-action="share/whatsapp/share"><i class="fa fa-whatsapp" aria-hidden="true"></i></a>
+                        <a href="whatsapp://send?text=4Rent 4Sale Riviera Maya Realty - {$share}" class="btn md--btn-circle" data-action="share/whatsapp/share"><i class="fa fa-whatsapp" aria-hidden="true"></i></a>
                     </div>
                     <div class="item">
                         <span>{$lang.share_by_email}</span>

@@ -12,7 +12,7 @@ class Blog_controller extends Controller
 
 	public function index()
 	{
-		define('_title', '{$lang.blog} | Propiedades Venta Tulum Realty');
+		define('_title', '{$lang.blog} | 4Rent 4Sale Riviera Maya Realty');
 
 		$template = $this->view->render($this, 'index');
 		$template = $this->format->replaceFile($template, 'header');
@@ -85,7 +85,7 @@ class Blog_controller extends Controller
 					$html .= '			<h4 style="color:#616161;text-transform:uppercase;font-weight:200;letter-spacing:15px;font-size:27px;line-height:1.35;margin:0px;margin-bottom:10px;text-align:center;">' . json_decode($article['title'], true)[$this->lang] . '</h4>';
 					$html .= '			<div style="color:#616161;line-height:23px;text-align:justify;margin-bottom:100px;font-size:20px;font-weight:200;">' . $description . '</div>';
 	                $html .= '			<div style="width:100%;height:auto;text-align:right;align-items:center;justify-content:center;">';
-					$html .= '				<a href="https://www.propiedadesventatulum.com/" style="text-decoration:none;text-transform:uppercase;font-weight:100;padding: 15px 15px;border: 1px solid #0186ba;letter-spacing:4px;">Propiedades Venta Tulum Realty</a>';
+					$html .= '				<a href="https://www.propiedadesventatulum.com/" style="text-decoration:none;text-transform:uppercase;font-weight:100;padding: 15px 15px;border: 1px solid #0186ba;letter-spacing:4px;">4Rent 4Sale Riviera Maya Realty</a>';
 					$html .= '			</div>';
 					$html .= '		</div>';
 					$html .= '	</div>';
@@ -96,7 +96,7 @@ class Blog_controller extends Controller
 					$html .= '		<a href="https://www.instagram.com/livingtulumrealty/"><img src="http://pngimg.com/uploads/instagram/instagram_PNG9.png"  style="border:0;width:auto;height:50px;"/></a>';
 					$html .= '	</div>';
 					$html .= '</div>';
-					$sendEmail = $this->model->sendEmail($subject, $html, [$shareEmail, $shareName], ['noreply@propiedadesventatulum.com', 'Propiedades Venta Tulum Realty']);
+					$sendEmail = $this->model->sendEmail($subject, $html, [$shareEmail, $shareName], ['noreply@propiedadesventatulum.com', '4Rent 4Sale Riviera Maya Realty']);
 				}
 				else if ($this->lang == 'en')
 				{
@@ -113,7 +113,7 @@ class Blog_controller extends Controller
 					$html .= '			<h4 style="color:#616161;text-transform:uppercase;font-weight:200;letter-spacing:15px;font-size:27px;line-height:1.35;margin:0px;margin-bottom:10px;text-align:center;">' . json_decode($article['title'], true)[$this->lang] . '</h4>';
 					$html .= '			<div style="color:#616161;line-height:23px;text-align:justify;margin-bottom:100px;font-size:20px;font-weight:200;">' . $description . '</div>';
 					$html .= '			<div style="width:100%;height:auto;text-align:right;align-items:center;justify-content:center;">';
-					$html .= '				<a href="https://www.propiedadesventatulum.com/" style="text-decoration:none;text-transform:uppercase;font-weight:100;padding: 15px 15px;border: 1px solid #0186ba;letter-spacing:4px;">Propiedades Venta Tulum Realty</a>';
+					$html .= '				<a href="https://www.propiedadesventatulum.com/" style="text-decoration:none;text-transform:uppercase;font-weight:100;padding: 15px 15px;border: 1px solid #0186ba;letter-spacing:4px;">4Rent 4Sale Riviera Maya Realty</a>';
 					$html .= '			</div>';
 					$html .= '		</div>';
 					$html .= '	</div>';
@@ -124,7 +124,7 @@ class Blog_controller extends Controller
 					$html .= '		<a href="https://www.instagram.com/livingtulumrealty/"><img src="http://pngimg.com/uploads/instagram/instagram_PNG9.png"  style="border:0;width:auto;height:50px;"/></a>';
 					$html .= '	</div>';
 					$html .= '</div>';
-					$sendEmail = $this->model->sendEmail($subject, $html, [$shareEmail, $shareName], ['noreply@propiedadesventatulum.com', 'Propiedades Venta Tulum Realty']);
+					$sendEmail = $this->model->sendEmail($subject, $html, [$shareEmail, $shareName], ['noreply@propiedadesventatulum.com', '4Rent 4Sale Riviera Maya Realty']);
 				}
 
 				echo json_encode([
@@ -147,7 +147,7 @@ class Blog_controller extends Controller
 			$locations	= $this->model->getLocations();
 			$item		= $this->model->getEntry($id);
 
-			define('_title', json_decode($item[0]['title'], true)[$this->lang] . ' | {$lang.blog} | Propiedades Venta Tulum Realty');
+			define('_title', json_decode($item[0]['title'], true)[$this->lang] . ' | {$lang.blog} | 4Rent 4Sale Riviera Maya Realty');
 
 			if (!empty($item))
 			{

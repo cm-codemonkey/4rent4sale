@@ -2,7 +2,7 @@
 
     <footer class="main-footer">
         <figure>
-            <img src="{$path.images}logo_type_2_black.svg" alt=""/>
+            <img src="{$path.images}logo_type_1_white.png" alt=""/>
         </figure>
         <div class="buttons">
             <a href="javascript:void(0);" target="_blank"><i class="fa fa-facebook" aria-hidden="true"></i></a>

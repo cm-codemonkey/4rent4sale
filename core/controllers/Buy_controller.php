@@ -13,7 +13,7 @@ class Buy_controller extends Controller
 
 	public function index()
 	{
-		define('_title', '{$lang.buy} | Propiedades Venta Tulum Realty');
+		define('_title', '{$lang.buy} | 4Rent 4Sale Riviera Maya Realty');
 
 		$template = $this->view->render($this, 'index');
 		$template = $this->format->replaceFile($template, 'header');

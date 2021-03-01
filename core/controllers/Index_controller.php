@@ -65,7 +65,7 @@ class Index_controller extends Controller
 								$html1 .= '	<div style="width:100%;padding:100px 40px;box-sizing:border-box;background-color:#fff;">';
 								$html1 .= '		<p style="font-size:14px;font-weight:100;text-align:center;text-transform:uppercase;line-height: 30px;color:#000;">' . $name . '</p>';
 								$html1 .= '		<p style="font-size:14px;font-weight:100;text-align:center;text-transform:uppercase;line-height: 30px;color:#000;">Gracias por suscribirte. Pronto recibirás las últimas noticias sobre las mejores oportunidades inmobiliarias.</p>';
-								$html1 .= '		<p style="font-size:14px;font-weight:600;text-align:center;margin-top:100px;color:#000;">Saludos desde el paraíso - Propiedades Venta Tulum Realty</p>';
+								$html1 .= '		<p style="font-size:14px;font-weight:600;text-align:center;margin-top:100px;color:#000;">Saludos desde el paraíso - 4Rent 4Sale Riviera Maya Realty</p>';
 								$html1 .= '		<p style="font-size:14px;font-weight:600;text-align:center;text-transform:lowercase;color:#000;">www.propiedadesventatulum.com</p>';
 								$html1 .= '	</div>';
 								$html1 .= '	<div style="width:100%;height:auto;text-align:center;align-items:center;justify-content:center;">';
@@ -91,7 +91,7 @@ class Index_controller extends Controller
 								$html1 .= '	<div style="width:100%;padding:100px 40px;box-sizing:border-box;background-color:#fff;">';
 								$html1 .= '		<p style="font-size:14px;font-weight:100;text-align:center;text-transform:uppercase;line-height: 30px;color:#000;">' . $name . '</p>';
 								$html1 .= '		<p style="font-size:14px;font-weight:100;text-align:center;text-transform:uppercase;line-height: 30px;color:#000;">Thanks for subscribing. Soon you will receive the latest news about the best real estate opportunities.</p>';
-								$html1 .= '		<p style="font-size:14px;font-weight:600;text-align:center;margin-top:100px;color:#000;">Greetins from paradise - Propiedades Venta Tulum Realty</p>';
+								$html1 .= '		<p style="font-size:14px;font-weight:600;text-align:center;margin-top:100px;color:#000;">Greetins from paradise - 4Rent 4Sale Riviera Maya Realty</p>';
 								$html1 .= '		<p style="font-size:14px;font-weight:600;text-align:center;text-transform:lowercase;color:#000;">www.propiedadesventatulum.com</p>';
 								$html1 .= '	</div>';
 								$html1 .= '	<div style="width:100%;height:auto;text-align:center;align-items:center;justify-content:center;">';
@@ -103,7 +103,7 @@ class Index_controller extends Controller
 								$html1 .= '</div>';
 							}
 
-							$mail1->setFrom('noreply@propiedadesventatulum.com', 'Propiedades Venta Tulum Realty');
+							$mail1->setFrom('noreply@propiedadesventatulum.com', '4Rent 4Sale Riviera Maya Realty');
 							$mail1->addAddress($email, $name);
 							$mail1->Subject = $subject1;
 							$mail1->Body = $html1;
@@ -116,7 +116,7 @@ class Index_controller extends Controller
 						try {
 
 							$mail2->setFrom($email, $name . ' ' . $lastname);
-							$mail2->addAddress($contact['email'], 'Propiedades Venta Tulum Realty');
+							$mail2->addAddress($contact['email'], '4Rent 4Sale Riviera Maya Realty');
 							$mail2->Subject = 'Nueva suscripción';
 							$mail2->Body  = '<div style="width:100%;padding:30px;box-sizing:border-box;background-color:#F1F1F1;">';
 							$mail2->Body .= '	<div style="width:100%;padding:100px 40px;box-sizing:border-box;background-color:#fff;">';
@@ -153,7 +153,7 @@ class Index_controller extends Controller
 		}
 		else
 		{
-			define('_title', 'Tulum Real Estate Propiedades Venta Tulum REALTY');
+			define('_title', 'Tulum Real Estate 4Rent 4Sale Riviera Maya REALTY');
 
 			$template = $this->view->render($this, 'index');
 			$template = $this->format->replaceFile($template, 'header');
