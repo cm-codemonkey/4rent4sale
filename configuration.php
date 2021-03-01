@@ -44,7 +44,7 @@ class Configuration
 
 	public static $db_state			= true;
 	public static $db_type 			= 'mysql';
-	public static $db_host 			= 'codemonkey.com.mx';
+	public static $db_host 			= '149.56.81.137';
 	public static $db_name 			= '4rent4sale';
 	public static $db_user 			= '4rent4sale';
 	public static $db_pass 			= 'g8#rN2c8';

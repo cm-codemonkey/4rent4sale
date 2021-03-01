@@ -103,7 +103,7 @@ $this->dependencies->getDependencies([
     </div>
 </section>
 
-<section id="discovery" data-image-src="{$discovery_background}"> </section>
+<section id="discovery" data-image-src="{$path.images}PISCINA_DIA-copia-scaled.jpg"> </section>
 
 <section id="blog-home" class="blog">
     <div class="container">
