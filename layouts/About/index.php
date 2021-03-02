@@ -2,14 +2,11 @@
 <header class="main-header">
     %{header}%
 </header>
-
 <section class="about-us-background" data-image-src="{$background_about}">
     <div class="content">
         <h1>{$title}</h1>
-        <h2>{$subtitle}</h2>
     </div>
 </section>
-
 <section class="about-content">
     <div class="container">
         {$about}

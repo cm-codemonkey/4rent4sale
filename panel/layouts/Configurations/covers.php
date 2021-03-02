@@ -16,7 +16,7 @@ $this->dependencies->getDependencies([
 <section class="main-content">
 
     <div class="toggles">
-        <!-- <div class="toggle">
+        <div class="toggle">
             <h3>Imagen de portada inicio<i class="material-icons icon">add</i></h3>
             <div class="box">
                 <form name ="editCoverHome" class="row">
@@ -66,61 +66,8 @@ $this->dependencies->getDependencies([
                     <a class="btn md--button-flat md--btn-colored" data-action="editCoverHome" data-ripple>Guardar</a>
                 </div>
             </div>
-        </div> -->
-
-        <div class="toggle">
-            <h3>Imagen de portada acerca de nosotros<i class="material-icons icon">add</i></h3>
-            <div class="box">
-                <form name ="editCoverAbout" class="row">
-                    <figure class="file">
-                        <img id="imgBackgroundAbout" src="{$background_about}" alt="" />
-                        <div class="upload">
-                            <input id="background_about" type="file" name="background_about" accept="image/*">
-                        </div>
-                    </figure>
-                    <div class="span6">
-                        <div class="md--group-form">
-                            <input name="title_about_es" type="text" required value="{$title_about_es}" />
-                            <span class="bar-bottom"></span>
-                            <label>Título (ES)</label>
-                            <a>Error</a>
-                        </div>
-                    </div>
-                    <div class="span6">
-                        <div class="md--group-form">
-                            <input name="title_about_en" type="text" required value="{$title_about_en}" />
-                            <span class="bar-bottom"></span>
-                            <label>Título (EN)</label>
-                            <a>Error</a>
-                        </div>
-                    </div>
-                    <div class="span6">
-                        <div class="md--group-form">
-                            <input name="subtitle_about_es" type="text" required value="{$subtitle_about_es}" />
-                            <span class="bar-bottom"></span>
-                            <label>Subtítulo (ES)</label>
-                            <a>Error</a>
-                        </div>
-                    </div>
-                    <div class="span6">
-                        <div class="md--group-form">
-                            <input name="subtitle_about_en" type="text" required value="{$subtitle_about_en}" />
-                            <span class="bar-bottom"></span>
-                            <label>Subtítulo (EN)</label>
-                            <a>Error</a>
-                        </div>
-                    </div>
-                </form>
-                <div class="text-center" style="display: none;">
-                    <p class="error"></p>
-                </div>
-                <div class="text-right">
-                    <a class="btn md--button-flat md--btn-colored" data-action="editCoverAbout" data-ripple>Guardar</a>
-                </div>
-            </div>
         </div>
-
-        <!-- <div class="toggle">
+        <div class="toggle">
             <h3>Imagen de portada propiedades<i class="material-icons icon">add</i></h3>
             <div class="box">
                 <form name ="editCoverProperty" class="row">
@@ -188,8 +135,7 @@ $this->dependencies->getDependencies([
                     <a class="btn md--button-flat md--btn-colored" data-action="editCoverProperty" data-ripple>Guardar</a>
                 </div>
             </div>
-        </div> -->
-
+        </div>
         <div class="toggle">
             <h3>Imagen de portada proceso de compra<i class="material-icons icon">add</i></h3>
             <div class="box">
@@ -241,7 +187,6 @@ $this->dependencies->getDependencies([
                 </div>
             </div>
         </div>
-
         <div class="toggle">
             <h3>Imagen de portada blog<i class="material-icons icon">add</i></h3>
             <div class="box">
@@ -293,7 +238,57 @@ $this->dependencies->getDependencies([
                 </div>
             </div>
         </div>
-
+        <div class="toggle">
+            <h3>Imagen de portada acerca de nosotros<i class="material-icons icon">add</i></h3>
+            <div class="box">
+                <form name ="editCoverAbout" class="row">
+                    <figure class="file">
+                        <img id="imgBackgroundAbout" src="{$background_about}" alt="" />
+                        <div class="upload">
+                            <input id="background_about" type="file" name="background_about" accept="image/*">
+                        </div>
+                    </figure>
+                    <div class="span6">
+                        <div class="md--group-form">
+                            <input name="title_about_es" type="text" required value="{$title_about_es}" />
+                            <span class="bar-bottom"></span>
+                            <label>Título (ES)</label>
+                            <a>Error</a>
+                        </div>
+                    </div>
+                    <div class="span6">
+                        <div class="md--group-form">
+                            <input name="title_about_en" type="text" required value="{$title_about_en}" />
+                            <span class="bar-bottom"></span>
+                            <label>Título (EN)</label>
+                            <a>Error</a>
+                        </div>
+                    </div>
+                    <div class="span6">
+                        <div class="md--group-form">
+                            <input name="subtitle_about_es" type="text" required value="{$subtitle_about_es}" />
+                            <span class="bar-bottom"></span>
+                            <label>Subtítulo (ES)</label>
+                            <a>Error</a>
+                        </div>
+                    </div>
+                    <div class="span6">
+                        <div class="md--group-form">
+                            <input name="subtitle_about_en" type="text" required value="{$subtitle_about_en}" />
+                            <span class="bar-bottom"></span>
+                            <label>Subtítulo (EN)</label>
+                            <a>Error</a>
+                        </div>
+                    </div>
+                </form>
+                <div class="text-center" style="display: none;">
+                    <p class="error"></p>
+                </div>
+                <div class="text-right">
+                    <a class="btn md--button-flat md--btn-colored" data-action="editCoverAbout" data-ripple>Guardar</a>
+                </div>
+            </div>
+        </div>
         <div class="toggle">
             <h3>Imagen de portada contacto<i class="material-icons icon">add</i></h3>
             <div class="box">

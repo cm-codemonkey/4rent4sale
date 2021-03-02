@@ -468,13 +468,12 @@ header.main-header nav.main-menu > ul > li .dropdown > span {
 section.home-background {
     padding: 50px 0;
     position: relative;
-    min-height: calc(100vh - 70px);
+    min-height: 100vh;
     box-sizing: border-box;
     color: #FFF;
     background-color: #1E1E1E;
     background-position: center;
     background-size: cover;
-    background-attachment: fixed;
 }
 
 @media (max-width: 1024px) {
@@ -490,7 +489,7 @@ section.home-background:before {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, 0.1);
+    background-color: rgba(0, 0, 0, 0.6);
 }
 
 section.home-background > .content {
@@ -731,7 +730,7 @@ section.properties-carousel:before {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, 0.2);
+    background-color: rgba(0, 0, 0, 0.6);
 }
 
 section.properties-carousel #properties-carousel div.item {
@@ -771,15 +770,11 @@ section.properties-carousel #properties-carousel div.item > div.cover {
     flex-direction: column;
     box-sizing: border-box;
     transition: 800ms;
-    /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#000000+0,000000+100&0.65+0,0+100;Neutral+Density */
-    background: -moz-linear-gradient(top,  rgba(0,0,0,0.65) 0%, rgba(0,0,0,0) 100%); /* FF3.6-15 */
-    background: -webkit-linear-gradient(top,  rgba(0,0,0,0.65) 0%,rgba(0,0,0,0) 100%); /* Chrome10-25,Safari5.1-6 */
-    background: linear-gradient(to bottom,  rgba(0,0,0,0.65) 0%,rgba(0,0,0,0) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a6000000', endColorstr='#00000000',GradientType=0 ); /* IE6-9 */
+    background-color: rgba(0, 0, 0, 0.6);
 }
 
 section.properties-carousel #properties-carousel div.item > div.cover:hover {
-    background-color: rgb(0 0 0 / 80%);
+    background-color: rgb(0, 0, 0, 0.6);
 }
 
 section.properties-carousel #properties-carousel div.item > div.cover a {
@@ -1507,7 +1502,7 @@ section.comments-carousel:before {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, 0.2);
+    background-color: rgba(0, 0, 0, 0.6);
 }
 
 section.comments-carousel #comments-carousel div.item {
@@ -1694,7 +1689,7 @@ section.subscribe {
     padding: 75px 0px;
     display: flex;
     justify-content: center;
-    background-color: #222;
+    background-color: #f9f9f9;
     position: relative;
 }
 
@@ -1708,7 +1703,7 @@ section.subscribe form[name="subscribe"] p {
     margin: 0;
     padding: 0px 0px 50px 0px;
     text-transform: uppercase;
-    color: #fff;
+    color: #222;
     letter-spacing: 24px;
     text-align: center;
     font-size: 56px;
@@ -1745,36 +1740,36 @@ section.subscribe form[name="subscribe"] input {
     width: 100%;
     height: 50px;
     padding: 0px 20px;
-    border: 1px solid #fff;
+    border: 1px solid #222;
     box-sizing: border-box;
     background: none;
-    color: #fff;
+    color: #222;
     margin-bottom: 40px;
 }
 
 section.subscribe form[name="subscribe"] input::-webkit-input-placeholder {
-    color: #fff;
+    color: #222;
     text-transform: uppercase;
     letter-spacing: 2px;
     font-weight: 100;
 }
 
 section.subscribe form[name="subscribe"] input:-moz-placeholder {
-    color: #fff;
+    color: #222;
     text-transform: uppercase;
     letter-spacing: 2px;
     font-weight: 100;
 }
 
 section.subscribe form[name="subscribe"] input::-moz-placeholder {
-    color: #fff;
+    color: #222;
     text-transform: uppercase;
     letter-spacing: 2px;
     font-weight: 100;
 }
 
 section.subscribe form[name="subscribe"] input:-ms-input-placeholder {
-    color: #fff;
+    color: #222;
     text-transform: uppercase;
     letter-spacing: 2px;
     font-weight: 100;
@@ -1784,19 +1779,13 @@ section.subscribe form[name="subscribe"] a {
     text-decoration: none;
     text-transform: uppercase;
     font-weight: 500;
-    border: 1px solid #fff;
+    border: 1px solid #222;
     letter-spacing: 4px;
     display: block;
-    background-color: #FFF;
-    color: #222;
+    background-color: #222;
+    color: #fff;
     line-height: 1;
     padding: 20px;
-}
-
-section.subscribe form[name="subscribe"] a:hover {
-    background-color: #fff;
-    color: #03a9f4;
-    transition: 800ms;
 }
 
 /* end-home ------------------------------------------------------------------ */
@@ -1822,7 +1811,7 @@ section.about-us-background:before {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgb(0 0 0 / 80%);
+    background-color: rgb(0,0,0,0.6);
 }
 
 section.about-us-background > .content {
@@ -1849,7 +1838,6 @@ section.about-us-background > .content  h1 {
     text-align: center;
     font-weight: 500;
     letter-spacing: 10px;
-    margin-top: 100px;
     margin-bottom: 0px;
 }
 
@@ -1869,8 +1857,9 @@ section.about-content {
 
 section.about-content div.container > * {
     font-family: "Roboto" !important;
-    font-weight: 500 !important;
-    line-height: 2 !important;
+    font-size: : 24px !important;
+    font-weight: 200 !important;
+    line-height: 40px !important;
     color: #616161 !important;
 }
 
@@ -1897,7 +1886,7 @@ section.properties-background:before {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgb(0 0 0 / 80%);
+    background-color: rgb(0,0,0,0.6);
 }
 
 section.properties-background > .content {
@@ -1930,7 +1919,6 @@ section.properties-background > .content  h1 {
     text-align: center;
     font-weight: 500;
     letter-spacing: 10px;
-    margin-top: 100px;
     margin-bottom: 0px;
 }
 
@@ -2676,25 +2664,6 @@ section.property-description div.price h4.space {
     margin-bottom: 60px;
 }
 
-section.property-description div.price:hover {
-    background-color: #b71c1c;
-    transition: 800ms;
-}
-
-section.property-description div.delivery:hover,
-section.property-description div.no-price:hover {
-    background-color: #212121;
-    transition: 800ms;
-}
-
-section.property-description div.delivery:hover i,
-section.property-description div.delivery:hover h4,
-section.property-description div.no-price:hover i,
-section.property-description div.no-price:hover h4 {
-    color: #cfbb99;
-    transition: 800ms;
-}
-
 /* properties-item-features
 /* --------------------------------------------------------------------------- */
 section.property-features {
@@ -2831,7 +2800,7 @@ section.property-features div.subproperty div.view_images:hover a.cover {
 /* --------------------------------------------------------------------------- */
 section.property-interested {
     width: 100%;
-    height: 200px;
+    height: 400px;
     position: relative;
     overflow: hidden;
 }
@@ -3137,7 +3106,7 @@ section.buy-process-background:before {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgb(0 0 0 / 80%);
+    background-color: rgb(0,0,0,0.6);
 }
 
 section.buy-process-background > .content {
@@ -3171,7 +3140,6 @@ section.buy-process-background > .content  h1 {
     text-align: center;
     font-weight: 500;
     letter-spacing: 10px;
-    margin-top: 100px;
     margin-bottom: 0px;
 }
 
@@ -3228,7 +3196,7 @@ section.tulum-style-background:before {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgb(0 0 0 / 80%);
+    background-color: rgb(0,0,0,0.6);
 }
 
 section.tulum-style-background > .content {
@@ -3262,7 +3230,6 @@ section.tulum-style-background > .content  h1 {
     text-align: center;
     font-weight: 500;
     letter-spacing: 10px;
-    margin-top: 100px;
     margin-bottom: 0px;
 }
 
@@ -3273,7 +3240,7 @@ section.blog {
     width: 100%;
     height: 100%;
     background-color: #FFF;
-    padding-top: 50px;
+    padding: 100px 0px;
 }
 
 @media (max-width: 425px) {
@@ -3570,7 +3537,8 @@ section.item-blog div.description h6 {
 
 section.item-blog div.description p {
     font-size: 14px;
-    font-weight: 400;
+    font-weight: 200;
+    line-height: 40px;
 }
 
 section.item-blog div.author {
@@ -3710,7 +3678,7 @@ section.contact-background:before {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgb(0 0 0 / 80%);
+    background-color: rgb(0,0,0,0.6);
 }
 
 section.contact-background > .content {
@@ -3745,7 +3713,6 @@ section.contact-background > .content  h1 {
     text-align: center;
     font-weight: 500;
     letter-spacing: 10px;
-    margin-top: 100px;
     margin-bottom: 0px;
 }
 
@@ -3817,8 +3784,8 @@ section.contact div.content p {
 }
 
 section.contact div.content p > i {
-    font-size: 10px;
-    margin: 0px 10px;
+    font-size: 18px;
+    margin: 0px 5px 0px 15px;
 }
 
 @media (max-width: 1024px) {
@@ -3969,20 +3936,6 @@ footer.main-footer div.buttons > a > i {
     margin-right: 5px;
     font-size: 30px;
 }
-
-footer.main-footer div.buttons > a:hover > i.fa.fa-facebook {
-    color: #3b5998;
-}
-
-footer.main-footer div.buttons > a:hover > i.fa.fa-twitter {
-    color: #00aced;
-}
-
-footer.main-footer div.buttons > a:hover > i.fa.fa-instagram {
-    /* box-shadow: 0 0 7.5vmin rgba(0, 0, 0, 0.5); */
-    background: radial-gradient(circle at 33% 100%, #FED373 4%, #F15245 30%, #D92E7F 62%, #9B36B7 85%, #515ECF);
-    color: #fff;
-    border-radius: .2em;
 
 /* end-footer ---------------------------------------------------------------- */
 

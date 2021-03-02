@@ -66,21 +66,15 @@ $this->dependencies->getDependencies([
         <script>$(function() { $(".chosen-select").chosen(); });</script>'
 	]
 ]);
-
 ?>
 <header class="main-header">
     %{header}%
 </header>
-
 {$imagesList}
-
 <section class="property-description">
     <div class="container">
         <div class="row">
             <div class="span12">
-                <!-- <div class="share">
-                    <div class="fb-share-button" data-href="{$share}" data-layout="button_count" data-size="small" data-mobile-iframe="true"><a class="fb-xfbml-parse-ignore" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fpropiedadesventatulum.com%2F&amp;src=sdkpreparse">Compartir</a></div>
-                </div> -->
                 <div class="button-action-property">
                     <div class="item whatsapp">
                         <span>{$lang.share_by_whatsapp}</span>
@@ -125,7 +119,7 @@ $this->dependencies->getDependencies([
             </div>
             <div class="span3">
                 <div class="price">
-                    <h4>{$type} <strong>{$lang.properties_view_from}</strong></h4>
+                    <h4><strong>{$lang.properties_view_from}</strong></h4>
                     <h3>$ <strong>{$price}</strong> {$coin}</h3>
                 </div>
             </div>
@@ -133,11 +127,6 @@ $this->dependencies->getDependencies([
         </div>
     </div>
 </section>
-
-<!-- {$charactheristicsList}
-
-{$amenitiesList} -->
-
 <section class="property-interested">
     <div class="main">
         <div class="interested">
@@ -372,13 +361,6 @@ $this->dependencies->getDependencies([
         </div>
     </div>
 </section>
-
-<div class="property-return">
-    <div class="container">
-        <a href="/properties">{$lang.btn_return}</a>
-    </div>
-</div>
-
 <div class="modal" data-modal-target-destination="sendEmail">
     <section class="content">
         <header class="modal-header">

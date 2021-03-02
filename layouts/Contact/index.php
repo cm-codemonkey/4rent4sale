@@ -18,12 +18,14 @@ $this->dependencies->getDependencies([
 <section class="contact-background" data-image-src="{$background_contact}">
     <div class="content">
         <h1>{$title}</h1>
-        <h2>{$subtitle}</h2>
     </div>
 </section>
 <section class="contact">
     <div class="content">
-        <h4 class="title">{$lang.contact_how_can_help}</h4>
+        <div class="thumb-iconbox">
+            <p><i class="material-icons">stay_current_portrait</i>{$contact_us_phone}<i class="material-icons">email</i>{$contact_us_email}<i class="material-icons">business</i>{$contact_us_address}</p>
+        </div>
+        <div class="space30"></div>
         <form name="contact" class="row">
             <div class="span6">
                 <input type="text" name="name" placeholder="{$lang.contact_nombre}" value="">
@@ -246,13 +248,6 @@ $this->dependencies->getDependencies([
         <div>
             <p class="error style2"></p>
         </div>
-        <a id="send" href="" class="btn" data-ripple="">{$lang.btn_send}</a>
-        <div class="space100"></div>
-        <div class="thumb-iconbox" data-ripple>
-            <div class="circle" name="person">
-                <i class="material-icons">person</i>
-            </div>
-            <p>{$contact_us_phone}<i class="material-icons">lens</i>{$contact_us_email}<i class="material-icons">lens</i>{$contact_us_address}</p>
-        </div>
+        <a id="send" href="" class="btn"="">{$lang.btn_send}</a>
     </div>
 </section>

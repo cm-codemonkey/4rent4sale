@@ -11,10 +11,8 @@ $this->dependencies->getDependencies([
 <section class="tulum-style-background" data-image-src="{$background_blog}">
     <div class="content">
         <h1>{$title}</h1>
-        <h2>{$subtitle}</h2>
     </div>
 </section>
-
 <section class="blog">
     <div class="container">
         {$entries}

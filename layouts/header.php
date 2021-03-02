@@ -11,16 +11,7 @@
         </div>
         <ul>
             <li><a href="/" data-ripple="2">{$lang.header_home}</a></li>
-            <li>
-                <a href="" data-ripple="2"><strong>{$lang.header_properties}</strong></a>
-                <div class="dropdown">
-                    <a href="/properties?locations=playa_del_carmen" data-ripple="2">Playa del Carmen</a>
-                    <a href="/properties?locations=tulum" data-ripple="2">Tulum</a>
-                    <a href="/properties?locations=puerto_aventuras" data-ripple="2">Puerto Aventuras</a>
-                    <a href="/properties?locations=mahahual" data-ripple="2">Mahahual</a>
-                    <a href="/properties" data-ripple="2">{$lang.all}</a>
-                </div>
-            </li>
+            <li><a href="/properties" data-ripple="2"><strong>{$lang.header_properties}</strong></a></li>
             <li><a href="/buy" data-ripple="2">{$lang.header_buy_process}</a></li>
             <li><a href="/blog" data-ripple="2">{$lang.header_tulum_style}</a></li>
             <li><a href="/about" data-ripple="2">{$lang.header_about_us}</a></li>

@@ -8,11 +8,9 @@ $this->dependencies->getDependencies([
     ]
 ]);
 ?>
-
 <header class="main-header">
     %{header}%
 </header>
-
 <section class="item-blog-background">
     <figure>
         <img src="{$cover}" alt="" />
@@ -23,18 +21,8 @@ $this->dependencies->getDependencies([
         </div>
     </div>
 </section>
-
 <section class="item-blog">
     <div class="container">
-        <div class="location">
-            <h6><i class="material-icons">location_on</i>{$location}</h6>
-        </div>
-        <div class="text-date">
-          <h6><i class="material-icons">person</i>@{$author}</h6>
-        </div>
-        <div class="description">
-            {$description}
-        </div>
         <div class="button-action-blog">
             <div class="item">
                 <span>{$lang.share_by_email}</span>
@@ -45,21 +33,11 @@ $this->dependencies->getDependencies([
                 <a href="whatsapp://send?text=4Rent 4Sale Riviera Maya Realty - {$share}" class="btn md--btn-circle" data-action="share/whatsapp/share"><i class="fa fa-whatsapp" aria-hidden="true"></i></a>
             </div>
         </div>
-        <!-- <div class="author">
-            <figure>
-                <img src="{$author_photo}" alt="" />
-            </figure>
-            <h4>{$author_name}</h4>
-            <h6>@{$author_username}</h6>
-        </div> -->
-        <div class="navigation">
-            <!-- <a>{$lang.blog_btn_last}</a> -->
-            <a href="/blog">{$lang.blog_btn_blog}</a>
-            <!-- <a>{$lang.blog_btn_next}</a> -->
+        <div class="description">
+            {$description}
         </div>
     </div>
 </section>
-
 <div class="modal" data-modal-target-destination="sendEmail">
     <section class="content">
         <header class="modal-header">
