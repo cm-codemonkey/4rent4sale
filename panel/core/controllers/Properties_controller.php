@@ -212,8 +212,8 @@ class Properties_controller extends Controller
 				if(!empty($_POST['sell']) AND !empty($_POST['rent']))
 					$message = 'Seleccione venta o renta';
 
-				if(empty($delivery))
-					$message = 'Ingrese la entrega de la propiedad';
+				// if(empty($delivery))
+				// 	$message = 'Ingrese la entrega de la propiedad';
 
 				if(empty($coin))
 					$message = 'Seleccione un tipo de moneda';

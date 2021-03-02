@@ -20,7 +20,7 @@ class Configuration
 	public static $domain 			= '4rent4salerivieramaya.com';
 	public static $webPage 			= '4Rent 4Sale';
 	public static $langDefault 		= 'en';
-	public static $error_reporting 	= 'development';
+	public static $error_reporting 	= 'none';
 	public static $debug 			= false;
 	public static $debugLang 		= false;
 	public static $urlFriendly 		= true;
