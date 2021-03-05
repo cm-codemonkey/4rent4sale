@@ -11,49 +11,84 @@ $(document).ready(function()
         uplAddImage.click();
     });
 
+    $('#galleryForm').on('submit', function ( e )
+    {
+        e.preventDefault();
+        e.stopPropagation();
+
+        var data = new FormData( this );
+
+        $.ajax({
+            url: '',
+            data: data,
+            type: 'post',
+            contentType: false,
+            processData: false,
+            cache: false,
+            dataType: 'json',
+            success: function ( response, status, xhr )
+            {
+                if(response.status == 'success')
+                {
+                    $('[data-load="addImage"]').html('<img src="images/gif-load.gif" style="width: 25px;"/>');
+                    $('[data-load="addImage"]').parent().show();
+                    btnAddImage.parent().remove();
+                    location.reload();
+                }
+
+                if(response.status == 'error')
+                {
+                    $('p.error').html(response.message);
+                    $('p.error').parent().show();
+                }
+            }
+        })
+    })
+
     uplAddImage.change(function()
     {
-        var image = '';
-        var input = document.getElementById('addImage');
-
-        if(window.FileReader)
-        {
-            var file	= input.files[0];
-            var reader	= new FileReader();
-
-            if(file && file.type.match('image.*'))
-                reader.readAsDataURL(file);
-
-            reader.onloadend = function()
-            {
-                image = reader.result;
-
-                $.ajax({
-                    url: '',
-                    type: 'POST',
-                    data: 'image=' + image,
-                    processData: false,
-                    cache: false,
-                    dataType: 'json',
-                    success: function(response)
-                    {
-                        if(response.status == 'success')
-                        {
-                            $('[data-load="addImage"]').html('<img src="images/gif-load.gif" style="width: 25px;"/>');
-                            $('[data-load="addImage"]').parent().show();
-                            btnAddImage.parent().remove();
-		                    location.reload();
-                        }
-
-		                if(response.status == 'error')
-		                {
-		                    $('p.error').html(response.message);
-		                    $('p.error').parent().show();
-		                }
-                    }
-                });
-            }
-        }
+        $('#galleryForm').submit();
+        // var image = '';
+        // var input = document.getElementById('addImage');
+        //
+        // if(window.FileReader)
+        // {
+        //     var file	= input.files[0];
+        //     var reader	= new FileReader();
+        //
+        //     if(file && file.type.match('image.*'))
+        //         reader.readAsDataURL(file);
+        //
+        //     reader.onloadend = function()
+        //     {
+        //         image = reader.result;
+        //
+        //         $.ajax({
+        //             url: '',
+        //             type: 'POST',
+        //             data: 'image=' + image,
+        //             processData: false,
+        //             cache: false,
+        //             dataType: 'json',
+        //             success: function(response)
+        //             {
+        //                 if(response.status == 'success')
+        //                 {
+        //                     $('[data-load="addImage"]').html('<img src="images/gif-load.gif" style="width: 25px;"/>');
+        //                     $('[data-load="addImage"]').parent().show();
+        //                     btnAddImage.parent().remove();
+		//                     location.reload();
+        //                 }
+        //
+		//                 if(response.status == 'error')
+		//                 {
+		//                     $('p.error').html(response.message);
+		//                     $('p.error').parent().show();
+		//                 }
+        //             }
+        //         });
+        //     }
+        // }
     });
 
     btnDltImage.on('click', function()

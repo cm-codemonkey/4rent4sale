@@ -114,4 +114,92 @@ class Format
 
 		return $shortenText;
     }
+
+	/**
+	* Verifica si el path es del administrador.
+	*
+	* @static
+	*
+	* @return  boolean
+	*/
+	public static function check_path_admin()
+	{
+		$cwd = Security::DS(getcwd());
+		$path_administrator = Security::DS(PATH_ADMINISTRATOR);
+
+		return ( $cwd == $path_administrator ) ? true : false;
+	}
+
+	/**
+	* Obtiene un fichero.
+	*
+	* @param	string    $file    Fichero
+	*
+	* @return  mixed
+	*/
+	public function get_file( $file = false, $arr = null )
+	{
+		if ( $file == false ) return null;
+
+		$file = Security::DS($file);
+
+		if ( file_exists($file) )
+		{
+			if ( !is_null($arr) )
+			{
+				foreach ( $arr as $key => $value ) global ${$key};
+			}
+
+			ob_start();
+
+			require $file;
+
+			$buffer = ob_get_contents();
+
+			ob_end_clean();
+
+			return $buffer;
+		}
+	}
+
+	/**
+	* Obtiene un fichero.
+	*
+	* @param	string    $path       Directorio del fichero.
+	* @param	string	  $file_name  Nombre del fichero.
+	* @param	string	  $file_type  Tipo de fichero.
+	*
+	* @return  mixed
+	*/
+	public function import_file( $path, $file_name, $file_type )
+	{
+		$supported_file_type = ['ini','php','html','json'];
+
+		if ( in_array($file_type, $supported_file_type) )
+		{
+			$file = Security::DS("{$path}/{$file_name}.{$file_type}");
+
+			if ( file_exists($file) )
+			{
+				switch ( $file_type )
+				{
+					case 'ini':
+					return parse_ini_file($file, true);
+					break;
+
+					case 'php':
+					require $file;
+					break;
+
+					case 'html':
+					return $this->get_file($file);
+					break;
+
+					case 'json':
+					return json_decode(file_get_contents($file), true);
+					break;
+				}
+			}
+		}
+	}
 }

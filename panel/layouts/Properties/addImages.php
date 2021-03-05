@@ -2,7 +2,7 @@
 defined('_EXEC') or die;
 $this->dependencies->getDependencies([
     'js' => [
-        '{$path.js}properties-images.min.js'
+        '{$path.js}properties-images.js'
     ],
     'other' => [
         '<script>
@@ -23,10 +23,13 @@ $this->dependencies->getDependencies([
 </section>
 <section class="main-content">
     <div class="property-images">
-        <div class="add">
-            <input id="addImage" type="file" class="hidden" />
-            {$btnAddImage}
-        </div>
+        <form id="galleryForm" enctype="multipart/form-data">
+            <div class="add">
+                <input id="addImage" type="file" name="gallery[]" accept="image/*" multiple class="hidden"/>
+                <!-- <input id="addImage" type="file" class="hidden" /> -->
+                {$btnAddImage}
+            </div>
+        </form>
         <div class="add" style="display:none">
 			<p class="error" data-load="addImage"></p>
 		</div>

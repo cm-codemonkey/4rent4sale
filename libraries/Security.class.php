@@ -238,4 +238,32 @@ class Security
 
 		return $stringRandom;
 	}
+
+    /**
+    * Remplaza los slashes de un uri por los default del sistema.
+    *
+    * @static
+    *
+    * @param   string    $path    URI
+    * @return  string
+    */
+    public static function DS( $path )
+    {
+        $path = str_replace('/', DIRECTORY_SEPARATOR, $path);
+        $first_character = substr($path, 0, 1);
+
+        $parts = explode(DIRECTORY_SEPARATOR, $path);
+
+        $return = "";
+
+        foreach ( $parts as $value )
+        {
+            if ( !empty($value) ) $return .= $value . DIRECTORY_SEPARATOR;
+        }
+
+        $return = substr($return, 0, -1);
+
+        if ( $first_character == DIRECTORY_SEPARATOR ) return DIRECTORY_SEPARATOR . $return;
+        else return $return;
+    }
 }

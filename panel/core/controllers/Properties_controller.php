@@ -1115,48 +1115,89 @@ class Properties_controller extends Controller
 		{
 			if(Format::existAjaxRequest() == true)
 			{
-				$image	= (isset($_POST['image']) AND !empty($_POST['image'])) ? $_POST['image'] : '';
+				require_once PATH_ADMINISTRATOR_COMPONENTS . '/Upload/Upload.class.php';
 
-				if(empty($image))
-					$message = 'empty.image';
+				$config_uploads = [
+					'extensions' => [ 'images' => ['jpg', 'jpeg', 'png'] ],
+					// 'path_uploads' => PATH_UPLOADS,
+					'path_uploads' => PATH_IMAGES,
+					'set_name' => 'FILE_NAME_LAST_RANDOM'
+				];
 
-				if(!isset($message))
-				{
-					$link = $this->model->createImage(str_replace(' ', '+', $image), PATH_IMAGES);
+				$post['gallery'] = ( isset($_FILES['gallery']) && !empty($_FILES['gallery']) ) ? Upload::order_array($_FILES['gallery']) : null;
 
-					if(!empty($link))
-					{
-						$addImage = $this->model->addPropertyImage($link, $id_property);
-
-						if(!empty($addImage))
-						{
-							echo json_encode([
-								'status' => 'success'
-							]);
-						}
-						else
-						{
-							echo json_encode([
-								'status' => 'error',
-								'message' => 'Error to upload image'
-							]);
-						}
-					}
-					else
-					{
-						echo json_encode([
-							'status' => 'error',
-							'message' => 'Error to upload image'
-						]);
-					}
-				}
+				if ( !empty($post['gallery']) )
+				/*  */ $post['gallery'] = Upload::upload_array($post['gallery'], $config_uploads);
 				else
+				/*  */ $post['gallery'] = null;
+
+				if ( is_array($post['gallery']) && !empty($post['gallery']) )
 				{
-					echo json_encode([
-						'status' => 'error',
-						'message' => $message
-					]);
+					$upload = [];
+
+					foreach ( $post['gallery'] as $key => $value )
+					{
+						if ( $value['status'] == 'OK' )
+						{
+							$upload[] = [
+								'title' => $value['file'],
+								'id_property' => $id_property
+							];
+						}
+					}
+
+					$this->model->addPropertyImageArray($upload);
 				}
+
+				echo json_encode([
+					'status' => 'success'
+				]);
+
+				// // $image	= (isset($_POST['image']) AND !empty($_POST['image'])) ? $_POST['image'] : '';
+				// $image = ( isset($_FILES['gallery']) && !empty($_FILES['gallery']) ) ? Upload::order_array($_FILES['gallery']) : null;
+				//
+				// if(empty($image))
+				// 	$message = 'empty.image';
+				//
+				// if(!isset($message))
+				// {
+				// 	$link = $this->model->createImage($image, PATH_IMAGES);
+				//
+				// 	print_r($link);
+				//
+				// 	// if(!empty($link))
+				// 	// {
+				// 	// 	$addImage = $this->model->addPropertyImage($link, $id_property);
+				// 	//
+				// 	// 	if(!empty($addImage))
+				// 	// 	{
+				// 	// 		echo json_encode([
+				// 	// 			'status' => 'success'
+				// 	// 		]);
+				// 	// 	}
+				// 	// 	else
+				// 	// 	{
+				// 	// 		echo json_encode([
+				// 	// 			'status' => 'error',
+				// 	// 			'message' => 'Error to upload image'
+				// 	// 		]);
+				// 	// 	}
+				// 	// }
+				// 	// else
+				// 	// {
+				// 	// 	echo json_encode([
+				// 	// 		'status' => 'error',
+				// 	// 		'message' => 'Error to upload image'
+				// 	// 	]);
+				// 	// }
+				// }
+				// else
+				// {
+				// 	echo json_encode([
+				// 		'status' => 'error',
+				// 		'message' => $message
+				// 	]);
+				// }
 			}
 			else
 			{

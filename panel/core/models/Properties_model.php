@@ -434,6 +434,13 @@ class Properties_model extends Model
         return $query;
     }
 
+	public function addPropertyImageArray($arr = null)
+    {
+		if (is_null($arr)) return;
+
+		$this->database->insert('properties_images', $arr);
+    }
+
 	public function addPropertyImage($title, $property)
     {
 		$query = $this->database->insert('properties_images', [
