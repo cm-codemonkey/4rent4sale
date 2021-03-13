@@ -1,4 +1,27 @@
-<?php defined('_EXEC') or die;
+<?php
+
+defined('_EXEC') or die;
+
+/**
+* @package valkyrie.core.models
+*
+* @author Gersón Aarón Gómez Macías <Chief Technology Officer, ggomez@codemonkey.com.mx>
+* @since August 18, 2018 <1.0.0> <@create>
+* @version 1.0.0
+* @summary cm-valkyrie-platform-website-template
+*
+* @author Alejandro Fernando Cabrera Contreras <Developer, acabrera@codemonkey.com.mx>
+* @since October 24-25, 2018 <1.0.0> <@update>
+* @version 1.0.0
+* @summary Datos dinámico de categories. Datos dinámico de titulo, subtitulo y slideshow.
+*
+* @author Gersón Aarón Gómez Macías <Developer, ggomez@codemonkey.com.mx>
+* @since October 30, 2018 <1.0.0> <@update>
+* @summary Se corrigierón errores de estructura y programación.
+*
+*
+* @copyright Copyright (C) Code Monkey S de RL <contact@codemonkey.com.mx, wwww.codemonkey.com.mx>. Todos los derechos reservados.
+*/
 
 class Index_model extends Model
 {
@@ -7,127 +30,199 @@ class Index_model extends Model
 		parent::__construct();
 	}
 
-	public function getMetadata()
+	/* Selects
+	------------------------------------------------------------------------------- */
+	public function get_settings()
 	{
-		$response = $this->database->select('metadata', [
-			'description',
-			'keywords'
-		], [
-			'ORDER' => 'id_metadata DESC',
-			'LIMIT' => 1
+		$query = $this->database->select('settings', [
+			'titles',
+			'backgrounds'
 		]);
 
-		if ( isset($response[0]) && !empty($response[0]) )
-			return $response[0];
+		return !empty($query[0]) ? $query[0] : null;
+	}
+
+	public function get_categories($filter = false)
+	{
+		if ($filter == false)
+		{
+			$query = $this->database->select('properties_categories', [
+				'id_property_category',
+				'name',
+				'background'
+			], [
+				'priority' => [1,2,3,4],
+				'ORDER' => ['priority' => 'ASC'],
+				'LIMIT' => 4
+			]);
+		}
 		else
-			return null;
-	}
+		{
+			$query = $this->database->select('properties_categories', [
+				'id_property_category',
+				'name'
+			]);
+		}
 
-	/*
-	/* --------------------------------------------------------------------------- */
-	public function getProperties()
-	{
-		$query = $this->database->select('properties', '*', ['status' => '1', 'LIMIT' => 4]);
 		return $query;
 	}
 
-	public function getPropertyLocation($id)
+	public function get_locations()
 	{
-		$query = $this->database->select('properties_locations', '*', ['id_location' => $id]);
-		return $query[0];
-	}
-
-	/*
-	/* --------------------------------------------------------------------------- */
-	public function getLocations()
-	{
-		$query = $this->database->select('properties_locations', '*');
-		return $query;
-	}
-
-	/*
-	/* --------------------------------------------------------------------------- */
-	public function getSliderImages()
-    {
-        $query = $this->database->select('slider_home', '*');
-        return $query;
-    }
-
-	/*
-	/* --------------------------------------------------------------------------- */
-	public function getEntries()
-	{
-		$query = $this->database->select('blog_entries', '*', ['popular_home[>=]' => 1, 'ORDER' => 'popular_home ASC', 'LIMIT' => 3]);
-		return $query;
-	}
-
-	public function getEntryAuthor($id)
-	{
-		$query = $this->database->select('website_users', '*', ['id_website_user' => $id]);
-		return $query[0];
-	}
-
-	/*
-	/* --------------------------------------------------------------------------- */
-	public function getComments()
-	{
-		$query = $this->database->select('comments', '*', ['visible' => true]);
-		return $query;
-	}
-
-	public function getContact()
-	{
-		$query = $this->database->select('general_configurations', '*');
-		return $query[0];
-	}
-
-	/*
-	/* --------------------------------------------------------------------------- */
-	public function newSubscription($name, $email)
-	{
-		$today = date('Y-m-d');
-
-		$query = $this->database->insert('subscriptions', [
-			'name' => $name,
-			'email' => $email,
-			'date' => $today
+		$query = $this->database->select('properties_locations', [
+			'id_property_location',
+			'name'
 		]);
 
 		return $query;
 	}
 
-	public function checkSubscription($email)
+	public function get_properties($filter = null)
 	{
-		$query = $this->database->select('subscriptions', '*', ['email' => $email]);
+		$array = [];
+
+		if (isset($filter) AND !empty($filter))
+		{
+			$filter_location_1 = 'properties.id_property_location[>=]';
+			$filter_location_2 = 1;
+			$filter_category_1 = 'properties.id_property_category[>=]';
+			$filter_category_2 = 1;
+
+			if ($filter['location'] != 'all')
+			{
+				$filter_location_1 = 'properties.id_property_location';
+				$filter_location_2 = $filter['location'];
+			}
+
+			if ($filter['category'] != 'all')
+			{
+				$filter_category_1 = 'properties.id_property_category';
+				$filter_category_2 = $filter['category'];
+			}
+
+			$query = $this->database->select('properties', [
+				'name',
+				'details',
+				'map'
+			], [
+				'AND' => [
+					$filter_location_1 => $filter_location_2,
+					$filter_category_1 => $filter_category_2
+				]
+			]);
+
+			if ($filter['price'] == 'rank' OR $filter['type'] == 'sale' OR $filter['type'] == 'rent')
+			{
+				foreach ($query as $property)
+				{
+					$filter_details = json_decode($property['details'], true);
+
+					$filter_details_price_permitted = false;
+					$filter_details_type_permitted = false;
+
+					foreach ($filter_details as $details)
+					{
+						if ($filter['price'] == 'rank')
+						{
+							if ($filter['price_from'] <= $details['price'] AND $filter['price_to'] >= $details['price'])
+								$filter_details_price_permitted = true;
+						}
+						else
+							$filter_details_price_permitted = true;
+
+						if ($filter['type'] == 'sale' OR $filter['type'] == 'rent')
+						{
+							if ($filter['type'] == 'sale' AND $details['type'] == 'sale')
+								$filter_details_type_permitted = true;
+							else if ($filter['type'] == 'rent' AND $details['type'] == 'rent')
+								$filter_details_type_permitted = true;
+						}
+						else
+							$filter_details_type_permitted = true;
+					}
+
+					if ($filter_details_price_permitted == true AND $filter_details_type_permitted == true)
+						array_push($array, $property);
+				}
+			}
+			else
+			{
+				foreach ($query as $property)
+					array_push($array, $property);
+			}
+		}
+		else
+		{
+			$query = $this->database->select('properties', [
+				'name',
+				'map'
+			], [
+				'priority[>=]' => 1
+			]);
+
+			foreach ($query as $property)
+				array_push($array, $property);
+		}
+
+		return $array;
+	}
+
+	public function get_magazine_articles()
+	{
+		$query = $this->database->select('magazine', [
+			'id_magazine_article',
+			'name',
+			'date',
+			'background'
+		], [
+			'priority' => [1,2,3],
+			'ORDER' => ['priority' => 'ASC'],
+			'LIMIT' => 3
+		]);
 
 		return $query;
 	}
 
-	public function sendEmail($subject, $html, $to, $from)
+	public function get_contact()
 	{
-		$this->component->loadComponent('phpmailer');
+		$query = $this->database->select('contact', [
+			'email',
+			'social_media'
+		]);
 
-		send_email(
-			[
-				$to[0] => $to[1]
-			],
-			[
-				$from[0],
-				$from[1]
-			],
-			FALSE,
-			FALSE,
-			FALSE,
-			FALSE,
-			$subject,
-			$html,
-			FALSE
-		);
+		return !empty($query) ? $query[0] : null;
 	}
 
-	public function getConfigurations()
-    {
-      $query = $this->database->select('general_configurations', '*', ['id_configuration' => 1]);
-      return $query[0];
-    }
+	public function get_exist_subscription($email)
+	{
+		$query = $this->database->select('subscriptions', [
+			'id_subscription'
+		], [
+			'email' => $email
+		]);
+
+		return $query;
+	}
+
+	/* Inserts
+	------------------------------------------------------------------------------- */
+	public function new_subscription($subscription)
+	{
+		$query = $this->database->insert('subscriptions', [
+			'fullname' => $subscription['fullname'],
+			'email' => $subscription['email']
+		]);
+
+		return $query;
+	}
+
+	/* Updates
+	------------------------------------------------------------------------------- */
+
+	/* Deletes
+	------------------------------------------------------------------------------- */
+
+	/* Others
+	------------------------------------------------------------------------------- */
+
 }

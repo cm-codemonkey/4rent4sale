@@ -1,28 +1,36 @@
-<?php defined('_EXEC') or die; ?>
-<div class="container">
-    <figure id="logotype">
-        <a href="/">
-            <img src="{$path.images}logo_type_1_white.png" alt="logotype"/>
-        </a>
-    </figure>
-    <nav class="main-menu">
-        <div class="trigger-main-menu" data-ripple>
-          <i class="material-icons">menu</i>
-        </div>
-        <ul>
-            <li><a href="/" data-ripple="2">{$lang.header_home}</a></li>
-            <li><a href="/properties" data-ripple="2"><strong>{$lang.header_properties}</strong></a></li>
-            <li><a href="/buy" data-ripple="2">{$lang.header_buy_process}</a></li>
-            <li><a href="/blog" data-ripple="2">{$lang.header_tulum_style}</a></li>
-            <li><a href="/about" data-ripple="2">{$lang.header_about_us}</a></li>
-            <li><a href="/contact" data-ripple="2">{$lang.header_contact}</a></li>
-            <li>
-                <a href="" data-ripple="2">{$lang.language}</a>
-                <div class="dropdown">
-                    <a href="?<?php echo Language:: getLanUrl('es'); ?> " data-ripple="2">Español</a>
-                    <a href="?<?php echo Language:: getLanUrl('en'); ?> " data-ripple="2">English</a>
-                </div>
-            </li>
-        </ul>
-    </nav>
-</div>
+<?php defined('_EXEC') or die;
+
+/**
+* @package valkyrie.layouts
+*
+* @author Gersón Aarón Gómez Macías <Chief Technology Officer, ggomez@codemonkey.com.mx>
+* @since August 18, 2018 <1.0.0> <@create>
+* @version 1.0.0
+* @summary cm-valkyrie-platform-website-template
+*
+* @author Irving Martinez Santiago <Chief Software Development Officer, imartinez@codemonkey.com.mx>
+* @since October 15, 2018 <1.0.0> <@update>
+* @summary Se actualizo el header con las paginas que pidio el cliente.
+*
+* @copyright Copyright (C) Code Monkey S de RL <contact@codemonkey.com.mx, wwww.codemonkey.com.mx>. Todos los derechos reservados.
+*/
+
+?>
+
+<header class="main-header">
+    <div class="container">
+        <figure class="logotype">
+            <a href="/"><img src="{$path.images}logotype_white.png" alt="logotype"></a>
+        </figure>
+        <nav class="menu">
+            <a href="/">{$lang.home}</a>
+            <a href="/properties">{$lang.properties}</a>
+            <a href="/magazine">{$lang.magazine}</a>
+            <a href="/contact">{$lang.contact}</a>
+            <a href="?<?php if (Session::get_value('lang') == 'es') { $lang = 'en'; } else if (Session::get_value('lang') == 'en') { $lang = 'es'; } echo Language::get_lang_url($lang); ?>"><img src="{$path.images}<?php echo $lang ?>.png" alt="es_flag" /></a>
+        </nav>
+        <nav class="res-menu">
+            <a href="" data-action="open-res-menu"><i class="material-icons">menu</i></a>
+        </nav>
+    </div>
+</header>

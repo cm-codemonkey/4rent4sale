@@ -1,0 +1,100 @@
+
+/* Main
+------------------------------------------------------------------------------*/
+main.login {
+    position: relative;
+    top: 0px;
+    left:  0px;
+    right:  0px;
+    width: 100%;
+    background-color: #3f51b5;
+}
+
+main.login form[name="login"] {
+    position: relative;
+    max-width: 400px;
+    width: 90%;
+    min-height: 500px;
+    height: 100vh;
+    margin: 0 auto;
+    display: -webkit-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+    padding: 30px;
+    box-sizing: border-box;
+}
+
+main.login form[name="login"] > figure {
+    width: 100%;
+    line-height: 0;
+    margin-bottom: 40px;
+    text-align: center;
+}
+
+main.login form[name="login"] > figure > img {
+    width: 100%;
+    max-width: 200px;
+}
+main.login form[name="login"] > button {
+    width: 100%;
+    margin: 0px 0px 10px 0px;
+}
+
+main.login form[name="login"] > button:hover {
+    cursor: pointer;
+}
+
+main.login form[name="login"] > p {
+    margin: 0px;
+    padding: 0px;
+}
+
+/* Inputs
+------------------------------------------------------------------------------*/
+div.label label > p {
+    font-size: 14px;
+    margin: 0px 0px 5px 0px;
+    padding: 0px;
+}
+
+div.label label input {
+    border: 1px solid #c7c7c7;
+    background-color: transparent;
+}
+
+div.label label input:focus {
+    border: 1px solid #757575;
+}
+
+/* Loader AJAX
+------------------------------------------------------------------------------*/
+.loading::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left:  0;
+    right:  0;
+    bottom: 0;
+    z-index: 2;
+    background-color: rgba(255, 255, 255, 0.7);
+}
+
+.loading::after {
+    content: "";
+    background-image: url('../images/load.gif');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: absolute;
+    top: 0;
+    left:  0;
+    right:  0;
+    bottom:  0;
+    width: 50px;
+    height: 50px;
+    margin: auto;
+    z-index: 3;
+}

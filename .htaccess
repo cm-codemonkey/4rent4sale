@@ -35,7 +35,5 @@ RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ index.php/$1 [L]
 RewriteRule ^(.*)/administrator/(.*)/?$ administrator/index.php?c=404 [L]
 
-RewriteEngine On
-RewriteCond %{HTTP_HOST} ^livingtulum\.com [NC]
-RewriteCond %{SERVER_PORT} 80
-RewriteRule ^(.*)$ https://www.propiedadesventatulum.com/$1 [R,L]
+# Reescribir sitemap.php a sitemap.xml
+RewriteRule ^sitemap\.xml$ sitemap\.php [L]

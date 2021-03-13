@@ -4,7 +4,7 @@ defined('_EXEC') or die;
 /**
 * Definimos las extenciones de los ficheros.
 */
-define('ADMINISTRATOR',             'panel');
+define('ADMINISTRATOR',             'cms');
 define('CLASS_PHP',                 '.class.php');
 define('CONTROLLER_PHP',            '_controller');
 define('MODEL_PHP',                 '_model');
@@ -18,8 +18,10 @@ define('PATH_CORE',                 PATH_ROOT . '/core/');
 define('PATH_INCLUDES',             PATH_ROOT . '/includes/');
 define('PATH_LANGUAGE',             PATH_ROOT . '/languages/');
 define('PATH_LAYOUTS',              PATH_ROOT . '/layouts/');
-define('PATH_LIBRARIES',            PATH_ROOT . '/libraries/');
+define('PATH_MY_LIBRARIES',         PATH_ROOT . '/libraries/');
+define('PATH_LIBRARIES',            PATH_MY_LIBRARIES . 'valkyrie/');
 define('PATH_MODULES',              PATH_ROOT . '/modules/');
+define('PATH_UPLOADS',              PATH_ROOT . '/uploads/');
 
 /**
 * Definimos los directorios comunes para vistas html
@@ -29,7 +31,6 @@ define('PATH_FONTS',                PATH_ROOT . '/fonts/');
 define('PATH_IMAGES',               PATH_ROOT . '/images/');
 define('PATH_JS',                   PATH_ROOT . '/js/');
 define('PATH_PLUGINS',              PATH_ROOT . '/plugins/');
-define('PATH_UPLOADS',              PATH_ROOT . '/uploads/');
 
 /**
 * Definimos los subdirectorios
@@ -46,7 +47,8 @@ define('PATH_ADMINISTRATOR_CORE',           PATH_ADMINISTRATOR . '/core/');
 define('PATH_ADMINISTRATOR_INCLUDES',       PATH_ADMINISTRATOR . '/includes/');
 define('PATH_ADMINISTRATOR_LANGUAGE',       PATH_ADMINISTRATOR . '/languages/');
 define('PATH_ADMINISTRATOR_LAYOUTS',        PATH_ADMINISTRATOR . '/layouts/');
-define('PATH_ADMINISTRATOR_LIBRARIES',      PATH_ADMINISTRATOR . '/libraries/');
+define('PATH_ADMINISTRATOR_MY_LIBRARIES',   PATH_ADMINISTRATOR . '/libraries/');
+define('PATH_ADMINISTRATOR_LIBRARIES',      PATH_ADMINISTRATOR_MY_LIBRARIES . 'valkyrie/');
 define('PATH_ADMINISTRATOR_MODULES',        PATH_ADMINISTRATOR . '/modules/');
 
 /**

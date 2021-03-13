@@ -1,0 +1,104 @@
+
+/**
+* @package valkyrie.cms.css
+*
+* @author Gersón Aarón Gómez Macías <Chief Technology Officer, ggomez@codemonkey.com.mx>
+* @since August 18, 2018 <1.0.0> <@create>
+* @version 1.0.0
+* @summary cm-valkyrie-platform-website-template (This file was created empty)
+*
+* @author Irving Martinez Santiago <Chief Software Development Officer, imartinez@codemonkey.com.mx>
+* @since October 09, 2018 <1.0.0> <@update>
+* @version 1.0.0
+* @summary Create style cm-ft-stle-1
+*
+* @copyright Copyright (C) Code Monkey S de RL <contact@codemonkey.com.mx, wwww.codemonkey.com.mx>. Todos los derechos reservados.
+*/
+
+/* CM Feature Style 1
+------------------------------------------------------------------------------ */
+div.cm-ft-stle-1 figure {
+    width: 100%;
+    position: relative;
+    margin: 10px 0px;
+    line-height: 0px;
+}
+
+div.cm-ft-stle-1 figure > img {
+    width: 100%;
+}
+
+div.cm-ft-stle-1 figure > a {
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    left: 0px;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: #fff;
+    background-color: rgba(0, 0, 0, 0.4);
+    opacity: 0;
+    transition: 400ms;
+}
+
+div.cm-ft-stle-1 figure:hover > a {
+    opacity: 1;
+    transition: 400ms;
+}
+
+div.cm-ft-stle-1 figure > a > i {
+    font-size: 150px;
+}
+
+/* Table details
+------------------------------------------------------------------------------ */
+table.table-details,
+table.table-characteristic,
+table.table-amenities {
+    width: 100%;
+    color: #757575;
+    margin-top: 20px;
+    margin-bottom: 30px;
+}
+
+table.table-details > thead > tr > th,
+table.table-characteristic > thead > tr > th,
+table.table-amenities > thead > tr > th {
+    font-weight: 600;
+    text-align: center;
+    text-transform: uppercase;
+    padding: 10px 0px;
+    border: 1px solid #bdbdbd;
+    box-sizing: border-box;
+    background-color: #e0e0e0;
+}
+
+table.table-details > tbody > tr > td,
+table.table-characteristic > tbody > tr > td,
+table.table-amenities > tbody > tr > td {
+    font-weight: 600;
+    text-align: center;
+    text-transform: uppercase;
+    padding: 20px 0px;
+    border: 1px solid #bdbdbd;
+    box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+    table.table-details,
+    table.table-characteristic,
+    table.table-amenities {
+        width: 100%;
+    }
+}
+
+form[name="select_details"] {
+    margin-bottom: 20px;
+}
+
+.buttons.dollar {
+    text-align: right !important;
+}

@@ -1,4 +1,17 @@
-<?php defined('_EXEC') or die;
+<?php
+
+defined('_EXEC') or die;
+
+/**
+* @package valkyrie.core.controllers
+*
+* @author Irving Martinez Santiago <Chief Software Development Officer, imartinez@codemonkey.com.mx>
+* @since October 17, 2018 <1.0.0> <@create>
+* @version 1.0.0
+* @summary create Properties controller
+*
+* @copyright Copyright (C) Code Monkey S de RL <contact@codemonkey.com.mx, wwww.codemonkey.com.mx>. Todos los derechos reservados.
+*/
 
 class Properties_controller extends Controller
 {
@@ -7,453 +20,630 @@ class Properties_controller extends Controller
 	public function __construct()
 	{
 		parent::__construct();
-		$this->lang = $_COOKIE['lang'];
+		$this->lang = Session::get_value('lang');
 	}
 
-	public function index()
+	/*
+	* @author Alejandro Fernando Cabrera Contreras <Developer, acabrera@codemonkey.com.mx>
+	* @since October 29, 2018 <1.0.0> <@update>
+	* @summary Datos dinámico de titulo, background,
+	* Agregar funcion de get_contact para llamar las redes sociales en el sitio web
+	*/
+
+	/* Ajax: No ajax
+	** Render: Properties page
+	------------------------------------------------------------------------------- */
+	public function index($filter)
 	{
-		define('_title', '{$lang.properties} | 4Rent 4Sale Riviera Maya Realty');
-
-		$template = $this->view->render($this, 'index');
-		$template = $this->format->replaceFile($template, 'header');
-
-		$locations = $this->model->getLocationsHeader();
-		$configurations = $this->model->getConfigurations();
-
-		$configurations = json_decode($configurations['cover_property'], true);
-
-		$locationsList	= '';
-
-		foreach ($locations as $location)
+		if (Format::exist_ajax_request() == true)
 		{
-			$locationsList .=
-			'<a href="/properties?locations=' . str_replace(' ','_',strtolower($location['title'])) . '" data-ripple>' . $location['title'] . '</a>';
-		}
+			$location = (isset($_POST['location']) AND !empty($_POST['location'])) ? $_POST['location'] : null;
+			$category = (isset($_POST['category']) AND !empty($_POST['category'])) ? $_POST['category'] : null;
+			$price = (isset($_POST['price']) AND !empty($_POST['price'])) ? $_POST['price'] : null;
+			$price_from = (isset($_POST['price_from']) AND !empty($_POST['price_from'])) ? $_POST['price_from'] : null;
+			$price_to = (isset($_POST['price_to']) AND !empty($_POST['price_to'])) ? $_POST['price_to'] : null;
+			$type = (isset($_POST['type']) AND !empty($_POST['type'])) ? $_POST['type'] : null;
 
-		$seo = $this->model->getMetadata();
+			$errors = [];
 
-		if (!empty($configurations['background_property_1']) AND !empty($configurations['background_property_2']) AND !empty($configurations['background_property_3']) AND !empty($configurations['background_property_4']))
-		{
-			if (isset($_GET) && !empty($_GET))
+			if (!isset($location))
+				array_push($errors, ['location', '{$lang.dont_leave_this_field_empty}']);
+
+			if (!isset($category))
+				array_push($errors, ['category', '{$lang.dont_leave_this_field_empty}']);
+
+			if (!isset($price))
+				array_push($errors, ['price', '{$lang.dont_leave_this_field_empty}']);
+			else if ($price == 'all' AND $price == 'rank')
+				array_push($errors, ['price', '{$lang.invalid_data}']);
+
+			if ($price == 'rank' AND !isset($price_from))
+				array_push($errors, ['price_from', '{$lang.dont_leave_this_field_empty}']);
+			else if ($price == 'rank' AND $price_from < 0)
+				array_push($errors, ['price_from', '{$lang.dont_enter_negative_numbers}']);
+			else if ($price == 'rank' AND $price_from >= $price_to)
+				array_push($errors, ['price_from', '{$lang.dont_enter_lasted}']);
+
+			if ($price == 'rank' AND !isset($price_to))
+				array_push($errors, ['price_to', '{$lang.dont_leave_this_field_empty}']);
+			else if ($price == 'rank' AND $price_to < 0)
+				array_push($errors, ['price_to', '{$lang.dont_enter_negative_numbers}']);
+			else if ($price == 'rank' AND $price_to <= $price_from)
+				array_push($errors, ['price_to', '{$lang.dont_enter_bigest}']);
+
+			if (!isset($type))
+				array_push($errors, ['type', '{$lang.dont_leave_this_field_empty}']);
+			else if ($type == 'all' AND $type == 'sale' AND $type == 'rent')
+				array_push($errors, ['type', '{$lang.invalid_data}']);
+
+			if (empty($errors))
 			{
-				if (isset($_GET['subcategory']) && !empty($_GET['subcategory']))
+				$filter = [
+					'location' => $location,
+					'category' => $category,
+					'price' => $price,
+					'price_from' => $price_from,
+					'price_to' => $price_to,
+					'type' => $type
+				];
+
+				$properties = $this->model->get_properties($filter);
+
+				$lst_properties = '';
+
+				foreach ($properties as $property)
 				{
-					if ($_GET['subcategory'] == 'presale')
-						$background_property = '{$path.images}' . $configurations['background_property_2'];
-					else if ($_GET['subcategory'] == 'resale')
-						$background_property = '{$path.images}' . $configurations['background_property_3'];
-					else if ($_GET['subcategory'] == 'lots')
-						$background_property = '{$path.images}' . $configurations['background_property_4'];
+					$details = json_decode($property['details'], true);
+
+					$type = '';
+					$price = 0;
+
+					$cicle = 1;
+
+					foreach ($details as $value)
+					{
+						if ($cicle == 1)
+						{
+							if ($value['type'] == 'sale')
+								$type .= '{$lang.sale}';
+							else if ($value['type'] == 'rent')
+								$type .= '{$lang.rent}';
+
+							$price = $value['price'];
+						}
+						else if ($cicle > 1)
+						{
+							if ($type == '{$lang.sale}' AND $value['type'] == 'rent')
+								$type .= ' - {$lang.rent}';
+							else if ($type == '{$lang.rent}' AND $value['type'] == 'sale')
+								$type .= ' - {$lang.sale}';
+
+							if ($value['price'] < $price)
+								$price = $value['price'];
+						}
+
+						$cicle = $cicle + 1;
+					}
+
+					$lst_properties .=
+					'<article>
+		                <figure>
+		                    <img src="{$path.images}properties/' . $property['background'] . '" alt="Property cover">
+							<span class="price">{$lang.from}: $ <strong>' . number_format($price, 0, '.', ',') . ' </strong> {$lang.currency}</span>
+							<span class="featured ' . (($property['priority'] == null) ? 'hidden' : '') . '">{$lang.featured}</span>
+							<span class="type">' . $type . '</span>
+		                </figure>
+		                <aside>
+		                    <h4>' . json_decode($property['name'], true)[$this->lang] . '</h4>
+						</aside>
+						<aside class="gray">
+							<span><i class="material-icons">place</i>' . json_decode($property['location'], true)[$this->lang] . '</span>
+							<span><i class="material-icons">category</i>' . json_decode($property['category'], true)[$this->lang] . '</span>
+							<div class="clear"></div>
+						</aside>
+						<aside>
+							<a href="/properties/more/' . $property['id_property'] . '/' . strtolower(str_replace(' ', '', json_decode($property['name'], true)[$this->lang])) . '" class="btn">{$lang.view_data_sheet}</a>
+							<div class="clear"></div>
+						</aside>
+		            </article>';
 				}
-				else
-					$background_property = '{$path.images}' . $configurations['background_property_1'];
+
+				echo json_encode([
+					'status' => 'success',
+					'html' => $lst_properties
+				]);
 			}
 			else
-				$background_property = '{$path.images}' . $configurations['background_property_1'];
+			{
+				echo json_encode([
+					'status' => 'error',
+					'labels' => $errors
+				]);
+			}
 		}
 		else
-			$background_property = '{$path.images}empty-image.jpg';
+		{
+			define('_title', '{$lang.properties} | {$lang.title} | {$lang.title_desc}');
 
-		$replace = [
-			'{$locationsList}' => $locationsList,
-			'{$optProyects}' => $this->model->getOptProyects(),
-			'{$filter_locations}' => $this->model->getHtmlLocations(),
-			'{$filter_categories}' => $this->model->getHtmlCategories(),
-			'{$items}' => $this->model->getHtmlItems(),
-			'{$background_property}' => $background_property,
-			'{$title}' => $configurations['title_property_' . $this->lang],
-			'{$subtitle}' => $configurations['subtitle_property_' . $this->lang],
-			'{$seo_description}' => $seo['description'],
-			'{$seo_keywords}' => $seo['keywords']
-		];
+			$template = $this->view->render($this, 'index');
 
-		$template = $this->format->replace($replace, $template);
+			$settings = $this->model->get_settings();
 
-		echo $template;
+			if (!empty($filter))
+				$properties = $this->model->get_properties(['location' => 'all', 'category' => $filter, 'price' => 'all', 'type' => 'all']);
+			else
+				$properties = $this->model->get_properties();
+
+			$locations = $this->model->get_locations();
+			$categories = $this->model->get_categories();
+			$contact = $this->model->get_contact();
+
+			$social_media = json_decode($contact['social_media'], true);
+
+			$lst_properties = '';
+			$lst_locations = '';
+			$lst_categories = '';
+
+			foreach ($properties as $property)
+			{
+				$details = json_decode($property['details'], true);
+
+				$type = '';
+				$price = 0;
+
+				$cicle = 1;
+
+				foreach ($details as $value)
+				{
+					if ($cicle == 1)
+					{
+						if ($value['type'] == 'sale')
+							$type .= '{$lang.sale}';
+						else if ($value['type'] == 'rent')
+							$type .= '{$lang.rent}';
+
+						$price = $value['price'];
+					}
+					else if ($cicle > 1)
+					{
+						if ($type == '{$lang.sale}' AND $value['type'] == 'rent')
+							$type .= ' - {$lang.rent}';
+						else if ($type == '{$lang.rent}' AND $value['type'] == 'sale')
+							$type .= ' - {$lang.sale}';
+
+						if ($value['price'] < $price)
+							$price = $value['price'];
+					}
+
+					$cicle = $cicle + 1;
+				}
+
+				$lst_properties .=
+				'<article>
+	                <figure>
+	                    <img src="{$path.images}properties/' . $property['background'] . '" alt="Property cover">
+						<span class="price">{$lang.from}: $ <strong>' . number_format($price, 0, '.', ',') . ' </strong> {$lang.currency}</span>
+						<span class="featured ' . (($property['priority'] == null) ? 'hidden' : '') . '">{$lang.featured}</span>
+						<span class="type">' . $type . '</span>
+	                </figure>
+	                <aside>
+	                    <h4>' . json_decode($property['name'], true)[$this->lang] . '</h4>
+					</aside>
+					<aside class="gray">
+						<span><i class="material-icons">place</i>' . json_decode($property['location'], true)[$this->lang] . '</span>
+						<span><i class="material-icons">category</i>' . json_decode($property['category'], true)[$this->lang] . '</span>
+						<div class="clear"></div>
+					</aside>
+					<aside>
+						<a href="/properties/more/' . $property['id_property'] . '/' . strtolower(str_replace(' ', '', json_decode($property['name'], true)[$this->lang])) . '" class="btn">{$lang.view_data_sheet}</a>
+						<div class="clear"></div>
+					</aside>
+	            </article>';
+			}
+
+			foreach ($locations as $location)
+			{
+				$lst_locations .=
+				'<option value="' . $location['id_property_location'] . '">' . json_decode($location['name'], true)[$this->lang] . '</option>';
+			}
+
+			foreach ($categories as $category)
+			{
+				$lst_categories .=
+				'<option value="' . $category['id_property_category'] . '" ' . ((!empty($filter) AND $filter == $category['id_property_category']) ? 'selected' : '') . '>' . json_decode($category['name'], true)[$this->lang] . '</option>';
+			}
+
+			$replace = [
+				'{$background}' => json_decode($settings['backgrounds'], true)['backgrounds']['properties'],
+				'{$title}' => json_decode($settings['titles'], true)['properties'][$this->lang],
+				'{$lst_properties}' => $lst_properties,
+				'{$lst_locations}' => $lst_locations,
+				'{$lst_categories}' => $lst_categories,
+				'{$facebook}' => $social_media['facebook'],
+				'{$instagram}' => $social_media['instagram']
+			];
+
+			$template = $this->format->replace($replace, $template);
+
+			echo $template;
+		}
 	}
 
-	public function view($id)
-	{
-		$item = $this->model->getItem($id);
+	/*
+	* @author Julian Alberto Canche Dzib <Development, jcanche@codemonkey.com.mx>
+	* @since October 17, 2018 <1.0.0> <@create>
+	* @version 1.0.0
+	* @summary Funcionalidad del formulario de envio de email
+	*/
 
-		if (Format::existAjaxRequest() == true)
+	/*
+	* @author Alejandro Fernando Cabrera Contreras <Developer, acabrera@codemonkey.com.mx>
+	* @since  October 29, 2018 <1.0.0> <@update>
+	* Agregar funcion de get_contact para llamar las redes sociales en el sitio web
+	*/
+
+	/* Ajax: No ajax
+	** Render: Property display page
+	------------------------------------------------------------------------------- */
+	public function more($id_property)
+	{
+		$property = $this->model->get_property_by_id($id_property);
+		$contact = $this->model->get_contact();
+
+		if (Format::exist_ajax_request() == true)
 		{
 			$action = $_POST['action'];
 
-			if ($action == 'sendInformationProperty')
+			if ($action == 'ask')
 			{
-				$shareEmail		= isset($_POST['shareEmail']) ? $_POST['shareEmail'] : '';
-				$shareName		= isset($_POST['shareName']) ? $_POST['shareName'] : '';
-				$shareMessage	= isset($_POST['shareMessage']) ? $_POST['shareMessage'] : '';
+				$fullname = (isset($_POST['fullname']) AND !empty($_POST['fullname'])) ? $_POST['fullname'] : null;
+				$email = (isset($_POST['email']) AND !empty($_POST['email'])) ? $_POST['email'] : null;
+				$phone = (isset($_POST['phone']) AND !empty($_POST['phone'])) ? $_POST['phone'] : null;
+				$message = (isset($_POST['message']) AND !empty($_POST['message'])) ? $_POST['message'] : null;
 
-				if (empty($shareName))
-					$message = '{$lang.write_your_name}';
+				$errors = [];
 
-				if (Security::checkMail($shareEmail) == false)
-					$message = '{$lang.not_an_email}';
+				if (!isset($fullname))
+					array_push($errors, ['fullname', '{$lang.dont_leave_this_field_empty}']);
 
-				if (empty($shareEmail))
-					$message = '{$lang.write_the_email}';
+				if (!isset($email))
+					array_push($errors, ['email', '{$lang.dont_leave_this_field_empty}']);
+				else if (Functions::check_email($email) == false)
+					array_push($errors, ['email', '{$lang.invalid_email}']);
 
-				if (!isset($message))
+				if (isset($phone) AND !is_numeric($phone))
+					array_push($errors, ['phone', '{$lang.enter_only_numbers}']);
+				else if (isset($phone) AND $phone < 0)
+					array_push($errors, ['phone', '{$lang.dont_enter_negative_numbers}']);
+				else if (isset($phone) AND strlen($phone) != 10)
+					array_push($errors, ['phone', '{$lang.invalid_number}']);
+				else if (isset($phone) AND Functions::check_number($phone, 'is_float') == true)
+					array_push($errors, ['phone', '{$lang.dont_enter_decimal_numbers}']);
+				else if (isset($phone) AND Functions::check_number($phone, 'exist_spaces') == true)
+					array_push($errors, ['phone', '{$lang.dont_enter_spaces}']);
+
+				if (empty($errors))
 				{
-					$property = $this->model->getProperty($id);
-					$location = $this->model->getEntryLocation($property['id_location']);
-					$category = $this->model->getEntryCategory($property['id_category']);
-					$description = html_entity_decode(json_decode($property['description'], true)[$this->lang]);
+					$header_mail  = 'MIME-Version: 1.0' . "\r\n";
+				    $header_mail .= 'Content-type: text/html; charset=utf-8' . "\r\n";
+				    $header_mail .= 'From: Tierra Pitaya <' . $contact['email'] . '>' . "\r\n";
 
-					$mail = new Mailer(true);
+					if ($this->lang == 'es')
+					{
+						$subject_mail = '¡Gracias por preguntar por esta propiedad!';
+						$subject_mail_2 = 'Uno de nuestros ejecutivos de venta se pondrá en contacto con usted.';
+						$a_title = 'Ver propiedad';
+					}
+					else if ($this->lang == 'en')
+					{
+						$subject_mail = '¡Thanks for ask for this property!';
+						$subject_mail_2 = 'One of our sales executives will get in touch with you.';
+						$a_title = 'View property';
+					}
 
-					try {
+					$body_mail =
+					'<html>
+						<head>
+							<title>' . $subject_mail . '</title>
+						</head>
+						<body>
+							<article style="width:600px;padding:20px;box-sizing:border-box;background-color:#eee;">
+								<header style="width:100%;padding:40px;box-sizing:border-box;border-bottom:1px solid #eee;background-color:#fff;">
+									<figure style="width:520px;padding:0px;margin:0px;overflow:hidden;text-align:center;">
+										<img style="height:50px;" src="https://tierrapitaya.com/images/logotype_black.png" alt="Logotype" />
+									</figure>
+								</header>
+								<aside style="width:100%;padding:40px;box-sizing:border-box;background-color:#fff;">
+									<figure style="width:600px;padding:0px;margin:0px;margin-bottom:10px;overflow:hidden;text-align:center;">
+										<img style="width:600px;" src="https://tierrapitaya.com/images/properties/' . $property['background'] . '" alt="Logotype" />
+									</figure>
+									<h6 style="margin:0px;margin-bottom:30px;padding:0px;font-size:14px;font-weight:300;color:#757575;">' . json_decode($property['name'], true)[$this->lang] . ' | <a href="https://tierrapitaya.com/properties/more/' . $property['id_property'] . '/' . json_decode($property['name'], true)[$this->lang]  . '">' . $a_title . '</a></h6>
+									<h4 style="margin:0px;margin-bottom:10px;padding:0px;font-size:18px;font-weight:600;color:#757575;">' . $fullname . '</h4>
+									<h6 style="margin:0px;margin-bottom:10px;padding:0px;font-size:14px;font-weight:300;color:#757575;">' . $email . ' | ' . $phone . '</h6>
+									<p style="margin:0px;margin-bottom:30px;padding:0px;font-size:14px;font-weight:300;text-align:justify;color:#757575;">' . $message . '</p>
+									<p style="margin:0px;padding:0px;font-size:14px;font-weight:300;text-align:center;color:#757575;">' . $subject_mail . ' ' . $subject_mail_2 . '</p>
+								</aside>
+								<footer style="width:100%;padding:40px;box-sizing:border-box;border-top:1px solid #eee;background-color:#fff;">
+									<a href="https://tierrapitaya.com/" style="margin:0px;padding:0px;font-size:14px;font-weight:300;text-align:center;color:#757575;">www.tierrapitaya.com</a>
+								</footer>
+							 </article>
+						 </body>
+					</html>';
 
-						if ($this->lang == 'es')
-						{
-							$subject = $shareName . ' compartió esta propiedad contigo';
-							$html  = '<div style="width:100%;padding:30px;box-sizing:border-box;background-color:#F1F1F1;">';
-							$html .= '	<div style="width:auto;height:auto;float:none;box-sizing:border-box;">';
-							$html .= '		<img src="https://www.propiedadesventatulum.com/administrator/images/properties/' . $property['cover'] . '" style="border:0;width:100%;height:600px;" />';
-							$html .= '		<img src="https://propiedadesventatulum.com/images/logo-living-tulum-white.png" style="border:0;width:auto;height:100px;display:block;position:absolute;top:30px;right:30px;margin:0;padding: 10px 10px;" />';
-							$html .= '	</div>';
-							$html .= '	<div style="width:100%;padding:100px 40px;box-sizing:border-box;background-color:#fff;">';
-							$html .= '		<div style="width:90%;max-width:1200px;margin: 0 auto;display:block;clear:both;">';
-							$html .= '			<h4 style="color:#616161;text-transform:uppercase;font-weight:400;font-size:18px;margin:0px;margin-bottom:10px;text-align:center;">' . $shareName . ' compartió esta propiedad contigo</h4>';
-							$html .= '			<p style="color:#616161;text-align:center;margin-bottom:100px;font-size:16px;font-weight:400;">' . $shareMessage . '</p>';
-							$html .= '			<h4 style="color:#000;text-transform:uppercase;font-weight:200;letter-spacing:30px;font-size:24px;line-height:1.35;margin:0px;margin-bottom:10px;">' . $property['title'] . '</h4>';
-							$html .= '			<h6 style="color:#000;text-transform:uppercase;font-weight:200;letter-spacing:30px;font-size:16px;line-height:1.35;margin:0px;margin-bottom:10px;">' . $location['title'] . '</h6>';
-							$html .= '			<div style="color:#616161;line-height:23px;text-align:justify;margin-bottom:100px;font-size:20px;font-weight:200;">' . $description . '</div>';
-			                $html .= '			<div style="width:100%;height:auto;text-align:right;align-items:center;justify-content:center;">';
-							$html .= '				<a href="https://www.propiedadesventatulum.com/" style="text-decoration:none;text-transform:uppercase;font-weight:100;padding: 15px 15px;border: 1px solid #0186ba;letter-spacing:4px;">4Rent 4Sale Riviera Maya Realty</a>';
-							$html .= '			</div>';
-							$html .= 		'</div>';
-							$html .= '	</div>';
-							$html .= '	<div style="width:100%;height:auto;text-align:center;align-items:center;justify-content:center;">';
-							$html .= '		<p style="font-size:14px;font-weight:600;text-align:center;color:#000;">También puedes seguirnos en nuestras redes sociales</p>';
-							$html .= '		<a href="https://www.facebook.com/Living-Tulum-Realty-264536504074968/?fref=ts"><img src="http://www.freeiconspng.com/uploads/facebook-logo-png--impending-10.png" style="border:0;width:auto;height:50px;"/></a>';
-							$html .= '		<a href="https://twitter.com/livingtulum"><img src="http://pluspng.com/img-png/twitter-png-logo--512.png" style="border:0;width:auto;height:50px;"/></a>';
-							$html .= '		<a href="https://www.instagram.com/livingtulumrealty/"><img src="http://pngimg.com/uploads/instagram/instagram_PNG9.png" style="border:0;width:auto;height:50px;"/></a>';
-							$html .= '	</div>';
-							$html .= '</div>';
-						}
-						else if ($this->lang == 'en')
-						{
-							$subject = $shareName . ' shared this property with you';
-							$html  = '<div style="width:100%;padding:30px;box-sizing:border-box;background-color:#F1F1F1;">';
-							$html .= '	<div style="width:auto;height:auto;float:none;box-sizing:border-box;">';
-							$html .= '		<img src="https://www.propiedadesventatulum.com/administrator/images/properties/' . $property['cover'] . '" style="border:0;width:100%;height:600px;" />';
-							$html .= '		<img src="https://propiedadesventatulum.com/images/logo-living-tulum-white.png" style="border:0;width:auto;height:100px;display:block;position:absolute;top:30px;right:30px;margin:0;padding: 10px 10px;" />';
-							$html .= '	</div>';
-							$html .= '	<div style="width:100%;padding:100px 40px;box-sizing:border-box;background-color:#fff;">';
-							$html .= '		<div style="width:90%;max-width:1200px;margin: 0 auto;display:block;clear:both;">';
-							$html .= '			<h4 style="color:#616161;text-transform:uppercase;font-weight:400;font-size:18px;margin:0px;margin-bottom:10px;text-align:center;">' . $shareName . ' shared this property with you</h4>';
-							$html .= '			<p style="color:#616161;text-align:center;margin-bottom:100px;font-size:16px;font-weight:400;">' . $shareMessage . '</p>';
-							$html .= '			<h4 style="color:#000;text-transform:uppercase;font-weight:200;letter-spacing:30px;font-size:24px;line-height:1.35;margin:0px;margin-bottom:10px;">' . $property['title'] . '</h4>';
-							$html .= '			<h6 style="color:#000;text-transform:uppercase;font-weight:200;letter-spacing:30px;font-size:16px;line-height:1.35;margin:0px;margin-bottom:10px;">' . $location['title'] . '</h6>';
-							$html .= '			<div style="color:#616161;line-height:23px;text-align:justify;margin-bottom:100px;font-size:20px;font-weight:200;">' . $description . '</div>';
-			                $html .= '			<div style="width:100%;height:auto;text-align:right;align-items:center;justify-content:center;">';
-							$html .= '				<a href="https://www.propiedadesventatulum.com/" style="text-decoration:none;text-transform:uppercase;font-weight:100;padding: 15px 15px;border: 1px solid #0186ba;letter-spacing:4px;">4Rent 4Sale Riviera Maya Realty</a>';
-							$html .= '			</div>';
-							$html .= '		</div>';
-							$html .= '	</div>';
-							$html .= '	<div style="width:100%;height:auto;text-align:center;align-items:center;justify-content:center;">';
-							$html .= '		<p style="font-size:14px;font-weight:600;text-align:center;color:#000;">You can also follow us on our social networks</p>';
-							$html .= '		<a href="https://www.facebook.com/Living-Tulum-Realty-264536504074968/?fref=ts"><img src="http://www.freeiconspng.com/uploads/facebook-logo-png--impending-10.png"  style="border:0;width:auto;height:50px;"/></a>';
-							$html .= '		<a href="https://twitter.com/livingtulum"><img src="http://pluspng.com/img-png/twitter-png-logo--512.png"  style="border:0;width:auto;height:50px;"/></a>';
-							$html .= '		<a href="https://www.instagram.com/livingtulumrealty/"><img src="http://pngimg.com/uploads/instagram/instagram_PNG9.png"  style="border:0;width:auto;height:50px;"/></a>';
-							$html .= '	</div>';
-							$html .= '</div>';
-						}
-
-						$mail->setFrom('noreply@propiedadesventatulum.com', '4Rent 4Sale Riviera Maya Realty');
-						$mail->addAddress($shareEmail, $shareName);
-						$mail->Subject = $subject;
-						$mail->Body = $html;
-						$mail->send();
-
-					} catch (Exception $e) { }
+					mail($contact['email'], $subject_mail, $body_mail, $header_mail);
+					mail($email, $subject_mail, $body_mail, $header_mail);
 
 					echo json_encode([
-						'status' => 'success'
+						'status' => 'success',
+						'message' => $subject_mail . ' ' . $subject_mail_2
 					]);
 				}
 				else
 				{
 					echo json_encode([
 						'status' => 'error',
-						'message' => $message
+						'labels' => $errors
 					]);
 				}
 			}
-
-			if ($action == 'interestedProperty')
+			else if ($action == 'send')
 			{
-				$name			= isset($_POST['name']) ? $_POST['name'] : '';
-				$lastname		= isset($_POST['lastname']) ? $_POST['lastname'] : '';
-				$email			= isset($_POST['email']) ? $_POST['email'] : '';
-				$phone			= isset($_POST['phone']) ? $_POST['phone'] : '';
-				$country		= isset($_POST['country']) ? $_POST['country'] : '';
-				$observations	= isset($_POST['observations']) ? $_POST['observations'] : '';
+				$email = (isset($_POST['email']) AND !empty($_POST['email'])) ? $_POST['email'] : null;
 
-				if (empty($observations))
-					$message = 'Type your ask';
+				$errors = [];
 
-				if (empty($country))
-					$message = 'Enter the country';
+				if (!isset($email))
+					array_push($errors, ['email', '{$lang.dont_leave_this_field_empty}']);
+				else if (Functions::check_email($email) == false)
+					array_push($errors, ['email', '{$lang.invalid_email}']);
 
-				if (empty($phone))
-					$message = 'Enter the phone';
-
-				if (Security::checkMail($email) == false)
-					$message = 'This not a email';
-
-				if (empty($email))
-					$message = 'Type your email';
-
-				if (empty($lastname))
-					$message = 'Type your last name';
-
-				if (empty($name))
-					$message = 'Type your name';
-
-				if (!isset($message))
+				if (empty($errors))
 				{
-					$newInterested = $this->model->newInterested($name, $lastname, $email, $country, $phone, $observations, $id);
+					//sender
+					$from = $contact['email'];
+					$from_name = 'Tierra Pitaya';
 
-					if (!empty($newInterested))
+					if ($this->lang == 'es')
 					{
-						$property = $this->model->getProperty($id);
-						$contact = $this->model->getContact();
-						$contact = json_decode($contact['contact_us'], true);
+						$subject_mail = 'Ficha técnica (' . json_decode($property['name'], true)[$this->lang] . ')';
+						$a_title = 'Ver propiedad en el sitio web';
+						$thanks_message = 'La ficha técnica se ha enviado correctamente';
+					}
+					else if ($this->lang == 'en')
+					{
+						$subject_mail = 'Datasheet (' . json_decode($property['name'], true)[$this->lang] . ')';
+						$a_title = 'View property in website';
+						$thanks_message = 'The datasheet has been sent correctly';
+					}
 
-						$mail1 = new Mailer(true);
+					//file
+					$file = 'uploads/' . $property['pdf'];
 
-						try {
+					//email body content
+					$html_content =
+					'<html>
+						<head>
+							<title>' . $subject_mail . '</title>
+						</head>
+						<body>
+							<article style="width:600px;padding:20px;box-sizing:border-box;background-color:#eee;">
+								<header style="width:100%;padding:40px;box-sizing:border-box;border-bottom:1px solid #eee;background-color:#fff;">
+									<figure style="width:520px;padding:0px;margin:0px;overflow:hidden;text-align:center;">
+										<img style="height:50px;" src="https://tierrapitaya.com/images/logotype_black.png" class="Logotype" />
+									</figure>
+								</header>
+								<aside style="width:100%;padding:40px;box-sizing:border-box;background-color:#fff;">
+									<h4 style="margin:0px;margin-bottom:30px;padding:0px;font-size:18px;font-weight:600;color:#757575;">' . $subject_mail . '</h4>
+									<a href="https://tierrapitaya.com/properties/more/' . $property['id_property'] . '/' . json_decode($property['name'], true)[$this->lang]  . '" style="margin:0px;padding:0px;font-size:14px;font-weight:300;text-align:center;color:#757575;">' . $a_title . '</a>
+								</aside>
+								<footer style="width:100%;padding:40px;box-sizing:border-box;border-top:1px solid #eee;background-color:#fff;">
+									<a href="https://tierrapitaya.com/" style="margin:0px;padding:0px;font-size:14px;font-weight:300;text-align:center;color:#757575;">www.tierrapitaya.com</a>
+								</footer>
+							 </article>
+						 </body>
+					</html>';
 
-							if ($this->lang == 'es')
-							{
-								$subject1 = 'Gracias por solicitar informacion sobre nuestra propiedad';
-								$html1  = '<div style="width:100%;padding:30px;box-sizing:border-box;background-color:#F1F1F1;">';
-								$html1 .= '	<div style="width:100%;padding:50px 0px;box-sizing:border-box;background-color:#f44336;">';
-								$html1 .= '		<div style="width:200px;height:auto;display:flex;align-items:center;justify-content:center;margin:auto;">';
-								$html1 .= '			<div style="width:auto;height:auto;float:none;box-sizing:border-box;">';
-								$html1 .= '				<img src="https://propiedadesventatulum.com/images/logo-living-tulum-white.png" style="border:0;width:auto;height:100px;" />';
-								$html1 .= '			</div>';
-								$html1 .= '			<div style="clear:both;display:block;overflow:hidden;visibility:hidden;width:0;height:0;"></div>';
-								$html1 .= '		</div>';
-								$html1 .= '	</div>';
-								$html1 .= '	<div style="width:100%;padding:100px 40px;box-sizing:border-box;background-color:#fff;">';
-								$html1 .= '		<p style="font-size:14px;font-weight:100;text-align:center;text-transform:uppercase;line-height: 30px;color:#000;">' . $name . ' ' . $lastname . '</p>';
-								$html1 .= '		<p style="font-size:14px;font-weight:100;text-align:center;text-transform:uppercase;line-height: 30px;color:#000;">Gracias por solicitar información sobre nuestra propiedad (' . $property['title'] . '). En breve uno de nuestros asesores te contactará para mayor información.</p>';
-								$html1 .= '		<p style="font-size:14px;font-weight:600;text-align:center;margin-top:100px;color:#000;">Saludos desde el paraíso - 4Rent 4Sale Riviera Maya Realty</p>';
-								$html1 .= '		<p style="font-size:14px;font-weight:600;text-align:center;text-transform:lowercase;color:#000;">www.propiedadesventatulum.com</p>';
-								$html1 .= '	</div>';
-								$html1 .= '	<div style="width:100%;height:auto;text-align:center;align-items:center;justify-content:center;">';
-								$html1 .= '		<p style="font-size:14px;font-weight:600;text-align:center;color:#000;">También puedes seguirnos en nuestras redes sociales</p>';
-								$html1 .= '		<a href="https://www.facebook.com/Living-Tulum-Realty-264536504074968/?fref=ts"><img src="http://www.freeiconspng.com/uploads/facebook-logo-png--impending-10.png"  style="border:0;width:auto;height:50px;"/></a>';
-								$html1 .= '		<a href="https://twitter.com/livingtulum"><img src="http://pluspng.com/img-png/twitter-png-logo--512.png"  style="border:0;width:auto;height:50px;"/></a>';
-								$html1 .= '		<a href="https://www.instagram.com/livingtulumrealty/"><img src="http://pngimg.com/uploads/instagram/instagram_PNG9.png"  style="border:0;width:auto;height:50px;"/></a>';
-								$html1 .= '	</div>';
-								$html1 .= '</div>';
-							}
-							else if ($this->lang == 'en')
-							{
-								$subject1 = 'Thanks for requesting information about our property';
-								$html1  = '<div style="width:100%;padding:30px;box-sizing:border-box;background-color:#F1F1F1;">';
-								$html1 .= '	<div style="width:100%;padding:50px 0px;box-sizing:border-box;background-color:#f44336;">';
-								$html1 .= '		<div style="width:200px;height:auto;display:flex;align-items:center;justify-content:center;margin:auto;">';
-								$html1 .= '			<div style="width:auto;height:auto;float:none;box-sizing:border-box;">';
-								$html1 .= '				<img src="https://propiedadesventatulum.com/images/logo-living-tulum-white.png" style="border:0;width:auto;height:100px;" />';
-								$html1 .= '			</div>';
-								$html1 .= '			<div style="clear:both;display:block;overflow:hidden;visibility:hidden;width:0;height:0;"></div>';
-								$html1 .= '		</div>';
-								$html1 .= '	</div>';
-								$html1 .= '	<div style="width:100%;padding:100px 40px;box-sizing:border-box;background-color:#fff;">';
-								$html1 .= '		<p style="font-size:14px;font-weight:100;text-align:center;text-transform:uppercase;line-height: 30px;color:#000;">' . $name . ' ' . $lastname .'</p>';
-								$html1 .= '		<p style="font-size:14px;font-weight:100;text-align:center;text-transform:uppercase;line-height: 30px;color:#000;">Thanks for requesting information about our property (' . $property['title'] . '). Shortly one of our advisors will contact you for more information.</p>';
-								$html1 .= '		<p style="font-size:14px;font-weight:600;text-align:center;margin-top:100px;color:#000;">Greetins from paradise - 4Rent 4Sale Riviera Maya Realty</p>';
-								$html1 .= '		<p style="font-size:14px;font-weight:600;text-align:center;text-transform:lowercase;color:#000;">www.propiedadesventatulum.com</p>';
-								$html1 .= '	</div>';
-								$html1 .= '	<div style="width:100%;height:auto;text-align:center;align-items:center;justify-content:center;">';
-								$html1 .= '		<p style="font-size:14px;font-weight:600;text-align:center;color:#000;">You can also follow us on our social networks</p>';
-								$html1 .= '		<a href="https://www.facebook.com/Living-Tulum-Realty-264536504074968/?fref=ts"><img src="http://www.freeiconspng.com/uploads/facebook-logo-png--impending-10.png"  style="border:0;width:auto;height:50px;"/></a>';
-								$html1 .= '		<a href="https://twitter.com/livingtulum"><img src="http://pluspng.com/img-png/twitter-png-logo--512.png"  style="border:0;width:auto;height:50px;"/></a>';
-								$html1 .= '		<a href="https://www.instagram.com/livingtulumrealty/"><img src="http://pngimg.com/uploads/instagram/instagram_PNG9.png"  style="border:0;width:auto;height:50px;"/></a>';
-								$html1 .= '	</div>';
-								$html1 .= '</div>';
-							}
+					//boundary
+					$semi_rand = md5(time());
+					$mime_boundary = "==Multipart_Boundary_x{$semi_rand}x";
 
-							$mail1->setFrom('noreply@propiedadesventatulum.com', '4Rent 4Sale Riviera Maya Realty');
-							$mail1->addAddress($email, $name . ' ' . $lastname);
-							$mail1->Subject = $subject1;
-							$mail1->Body = $html1;
-							$mail1->send();
+					//Headers
+					$header_mail = "From: $from_name" . " <' . $from . '>";
+					$header_mail .= "MIME-Version: 1.0\n";
+					$header_mail .= "Content-Type: multipart/mixed;\n";
+					$header_mail .= "boundary=\"{$mime_boundary}\"";
 
-						} catch (Exception $e) { }
+					//body mail
+					$body_mail = "--{$mime_boundary}\n" . "Content-Type: text/html; charset=\"UTF-8\"\n" .
+					"Content-Transfer-Encoding: 7bit\n\n" . $html_content . "\n\n";
 
-						$mail2 = new Mailer(true);
-
-						try {
-
-							$mail2->setFrom($email, $name . ' ' . $lastname);
-							$mail2->addAddress($contact['email'], '4Rent 4Sale Riviera Maya Realty');
-							$mail2->Subject = 'Nueva solicitud de información sobre ' . $property['title'];
-							$mail2->Body  = '<div style="width:100%;padding:30px;box-sizing:border-box;background-color:#F1F1F1;">';
-							$mail2->Body .= '	<div style="width:100%;padding:100px 40px;box-sizing:border-box;background-color:#fff;">';
-							$mail2->Body .= '		<p style="font-size:14px;font-weight:100;text-align:center;text-transform:uppercase;line-height: 30px;color:#000;">Cliente: ' . $name . ' ' . $lastname . '</p>';
-							$mail2->Body .= '		<p style="font-size:14px;font-weight:100;text-align:center;text-transform:uppercase;line-height: 30px;color:#000;">Propiedad: ' . $property['title'] . '</p>';
-							$mail2->Body .= '		<p style="font-size:14px;font-weight:100;text-align:center;text-transform:uppercase;line-height: 30px;color:#000;">Correo electrónico: ' . $email . '</p>';
-							$mail2->Body .= '		<p style="font-size:14px;font-weight:100;text-align:center;text-transform:uppercase;line-height: 30px;color:#000;">País: ' . $country . ' Teléfono: ' . $phone . '</p>';
-							$mail2->Body .= '		<p style="font-size:14px;font-weight:100;text-align:center;text-transform:uppercase;line-height: 30px;color:#000;">Observaciones: ' . $observations . '</p>';
-							$mail2->Body .= '		<p style="font-size:14px;font-weight:100;text-align:center;text-transform:uppercase;line-height: 30px;color:#000;">Idioma: ' . (($this->lang == 'es') ? 'Español' : 'Ingles') . '</p>';
-							$mail2->Body .= '	</div>';
-							$mail2->Body .= '</div>';
-							$mail2->send();
-
-						} catch (Exception $e) { }
-
-						if ($item[0]['title'] === 'KOKOON TULUM')
+					//preparing attachment
+					if( !empty($file) > 0 )
+					{
+						if( is_file($file) )
 						{
-							Session::setValue('kokoontulum', true);
-							$path = '/properties/kokoontulum';
-						}
-						else
-							$path = 'reload';
+							$body_mail .= "--{$mime_boundary}\n";
+							$fp = fopen( $file,"rb" );
+        					$data = fread( $fp,filesize($file) );
 
-						echo json_encode([
-							'status' => 'success',
-							'path' => $path,
-							'message' => '{$lang.successfully}'
-						]);
+							fclose($fp);
+							$data = chunk_split(base64_encode($data));
+							$body_mail .= "Content-Type: application/octet-stream; name=\"" . basename($file) . "\"\n" .
+							"Content-Description: " . basename($file) . "\n" .
+							"Content-Disposition: attachment;\n" . " filename=\"" . basename($file) . "\"; size=" . filesize($file) . ";\n" .
+							"Content-Transfer-Encoding: base64\n\n" . $data . "\n\n";
+						}
 					}
-					else
-					{
-						echo json_encode([
-							'status' => 'error',
-							'message' => 'Error to insert row'
-						]);
-					}
+
+					$body_mail .= "--{$mime_boundary}--";
+					$returnpath = "-f" . $from;
+
+					mail($email, $subject_mail, $body_mail, $header_mail, $returnpath);
+
+					// $header_mail  = 'MIME-Version: 1.0;' . "\r\n";
+				    // $header_mail .= 'Content-type: multipart/mixed;' . "\r\n";
+					// $header_mail .= 'boundary: "=T=P=Y=A=";' . "\r\n";
+				    // $header_mail .= 'From: Tierra Pitaya <' . $contact['email'] . '>;' . "\r\n";
+					//
+					// if ($this->lang == 'es')
+					// {
+					// 	$subject_mail = 'Ficha técnica (' . json_decode($property['name'], true)[$this->lang] . ')';
+					// 	$a_title = 'Ver propiedad en el sitio web';
+					// 	$thanks_message = 'La ficha técnica se ha enviado correctamente';
+					// }
+					// else if ($this->lang == 'en')
+					// {
+					// 	$subject_mail = 'Datasheet (' . json_decode($property['name'], true)[$this->lang] . ')';
+					// 	$a_title = 'View property in website';
+					// 	$thanks_message = 'The datasheet has been sent correctly';
+					// }
+					//
+					// $fp = fopen('uploads/' . $property['pdf'], "rb");
+					// $size_file = filesize('uploads/' . $property['pdf']);
+					// $name_file = basename('uploads/' . $property['pdf']);
+				    // $file = fread($fp, $size_file);
+					// $file = chunk_split(base64_encode($file));
+					//
+					// $body_mail = "--=T=P=Y=A=\r\n";
+					// $body_mail .= "Content-Type: application/octet-stream;\r\n";
+				    // $body_mail .= "name=" . $name_file . ";\r\n";
+				    // $body_mail .= "Content-Transfer-Encoding: base64;\r\n";
+				    // $body_mail .= "Content-Disposition: attachment;\r\n";
+				    // $body_mail .= "filename=" . $name_file . ";\r\n";
+				    // $body_mail .= "\r\n";
+					// $body_mail .= "$file\r\n";
+					// $body_mail .= "--=T=P=Y=A=--\r\n";
+					// $body_mail .=
+					// '<html>
+					// 	<head>
+					// 		<title>' . $subject_mail . '</title>
+					// 	</head>
+					// 	<body>
+					// 		<article style="width:600px;padding:20px;box-sizing:border-box;background-color:#eee;">
+					// 			<header style="width:100%;padding:40px;box-sizing:border-box;border-bottom:1px solid #eee;background-color:#fff;">
+					// 				<figure style="width:520px;padding:0px;margin:0px;overflow:hidden;text-align:center;">
+					// 					<img style="height:50px;" src="https://tierrapitaya.com/images/logotype_black.png" alt="Logotype" />
+					// 				</figure>
+					// 			</header>
+					// 			<aside style="width:100%;padding:40px;box-sizing:border-box;background-color:#fff;">
+					// 				<h4 style="margin:0px;margin-bottom:30px;padding:0px;font-size:18px;font-weight:600;color:#757575;">' . $subject_mail . '</h4>
+					// 				<a href="https://tierrapitaya.com/properties/more/' . $property['id_property'] . '/' . json_decode($property['name'], true)[$this->lang]  . '" style="margin:0px;padding:0px;font-size:14px;font-weight:300;text-align:center;color:#757575;">' . $a_title . '</a>
+					// 			</aside>
+					// 			<footer style="width:100%;padding:40px;box-sizing:border-box;border-top:1px solid #eee;background-color:#fff;">
+					// 				<a href="https://tierrapitaya.com/" style="margin:0px;padding:0px;font-size:14px;font-weight:300;text-align:center;color:#757575;">www.tierrapitaya.com</a>
+					// 			</footer>
+					// 		 </article>
+					// 	 </body>
+					// </html>';
+					//
+					// // mail($contact['email'], $subject_mail, $body_mail, $header_mail);
+					// mail($email, $subject_mail, $body_mail, $header_mail);
+
+					echo json_encode([
+						'status' => 'success',
+						'message' => $thanks_message
+					]);
 				}
 				else
 				{
 					echo json_encode([
 						'status' => 'error',
-						'message' => $message
+						'labels' => $errors
 					]);
 				}
 			}
 		}
 		else
 		{
-			$template = $this->view->render($this, 'view');
-			$template = $this->format->replaceFile($template, 'header');
+			define('_title', '{$lang.title}');
 
-			$locations = $this->model->getLocationsHeader();
+			$template = $this->view->render($this, 'more');
 
-			$locationsList	= '';
+			$property_gallery = $this->model->get_property_gallery($id_property);
 
-			define('_title', $item[0]['title'] . ' | {$lang.properties} | 4Rent 4Sale Riviera Maya Realty');
+			$details = json_decode($property['details'], true);
+			$social_media = json_decode($contact['social_media'], true);
 
-			$property = $item[0];
-			$subproperties = $item[1];
-			$images = $item[2];
-			$location = $item[3];
-			$category = $item[4];
+			$lst_details = '';
+			$lst_gallery_images = '';
 
-			$imagesList = '';
+			$cicle = 1;
 
-			$type = '';
-			$status = '';
-			$interested	= '';
-
-			foreach ($locations as $value)
-				$locationsList .= '<a href="/properties?locations=' . str_replace(' ','_',strtolower($value['title'])) . '" data-ripple>' . $value['title'] . '</a>';
-
-			if (!empty($images))
+			foreach ($details as $details)
 			{
-				$imagesList .=
-				'<section class="property-images">
-	                <div id="property-images" class="owl-carousel">';
+				$lst_details .=
+				'<div class="item ' . (!empty($details['background']) ? 'featured' : '') . ' ' . ((!empty($details['background']) AND $cicle == 2) ? 'right' : '') . '">
+					' . (!empty($details['background']) ? '<figure><img src="{$path.images}properties/' . $details['background'] . '" alt="Multiple property details cover" /></figure>' : '') . '
+	                ' . (!empty($details['name'][$this->lang]) ? '<h4>' . $details['name'][$this->lang] . '</h4>' : '') . '
+					<span class="highlighted">{$lang.' . $details['type'] . '} $ <strong>' . number_format($details['price'], 0, '.', ',') . '</strong> {$lang.currency}</span>
+					<span class="right highlighted ' . (($details['available'] == true) ? 'available' : '') . '"><strong>{$lang.' . (($details['available'] == true) ? 'available' : 'unavailable') . '}</strong></span>
+					<div class="clear padding-top-20"></div>
+					<span><i class="material-icons">rounded_corner</i>' . $details['dimensions'][$this->lang] . '</span>';
 
-				foreach ($images as $image)
+				if (!empty($details['characteristics']))
 				{
-					$imagesList .=
-					'<div class="item" data-image-src="{$path.images}' . $image['title'] . '" alt="" ></div>';
+					$lst_details .=
+					'<div class="clear padding-top-20"></div>';
+
+					foreach ($details['characteristics'] as $characteristics)
+					{
+						$lst_details .=
+						'<span class="list"><i class="material-icons">keyboard_arrow_right</i>' . $characteristics[$this->lang] . '</span>';
+					}
 				}
 
-				$imagesList .=
-				'	</div>
-					<div class="buttons">
-						<a href="" id="left"><i class="material-icons">keyboard_arrow_left</i></a>
-						<a href="" id="right"><i class="material-icons">keyboard_arrow_right</i></a>
-					</div>
-				</section>';
+				if (!empty($details['amenities']))
+				{
+					$lst_details .=
+					'<div class="clear padding-top-20"></div>';
+
+					foreach ($details['amenities'] as $amenities)
+					{
+						$lst_details .=
+						'<span class="list"><i class="material-icons">keyboard_arrow_right</i>' . $amenities[$this->lang] . '</span>';
+					}
+				}
+
+				$lst_details .=
+	            '</div>
+				<div class="clear"></div>';
+
+				if (!empty($details['background']))
+					$cicle = ($cicle == 2) ? 1 : $cicle + 1;
 			}
 
-			if ($property['multiple'] == true OR $property['status'] == '1')
+			if (!empty($property_gallery))
 			{
-				if ($property['type'] == '1')
-					$type = ($this->lang == 'es') ? 'Propiedad en venta' : 'Property for sell';
-				else if ($property['type'] == '2')
-					$type = ($this->lang == 'es') ? 'Propiedad en renta' : 'Property for rent';
+				$lst_gallery_images .=
+				'<div class="cm-gallery-style-1">';
 
-				$status = ($this->lang == 'es') ? 'Disponible' : 'Available';
+				foreach ($property_gallery as $image)
+				{
+					$lst_gallery_images .=
+					'<figure>
+						<img src="{$path.images}properties/gallery/'. $image['name'] .'" alt="Property gallery image">
+						<a href="{$path.images}properties/gallery/'. $image['name'] .'" class="fancybox-thumb" rel="fancybox-thumb"><i class="material-icons">search</i></a>
+					</figure>';
+				}
 
-				$interested .=
-				'<h4>{$lang.properties_view_interested}</h4>
-	            <div class="">
-	                ' . (empty($property['pdf']) ? '' : '<a href="{$path.images}' . $property['pdf'] . '" download="livingtulum_' . $property['title'] . '.pdf">Download PDF</a>') . '
-	                <a href="" data-action="openAsk">{$lang.properties_view_ask}</a>
-	            </div>';
+				$lst_gallery_images .=
+				'	<div class="clear"></div>
+				</div>';
 			}
-			else if ($property['status'] == '2')
-			{
-				$status = ($this->lang == 'es') ? 'Vendida' : 'Sold';
-
-				$interested .=
-				'<h4>{$lang.properties_view_sorry}</h4>
-				 <h4>{$lang.properties_view_been} ' . $status . '</h4>';
-			}
-			else if ($property['status'] == '3')
-			{
-				$status = ($this->lang == 'es') ? 'Rentada' : 'Rented';
-
-				$interested .=
-				'<h4>{$lang.properties_view_sorry}</h4>
-				 <h4>{$lang.properties_view_been} ' . $status . '</h4>';
-			}
-			else if ($property['status'] == '4')
-			{
-				$status = ($this->lang == 'es') ? 'Apartada' : 'Pulled Apart';
-
-				$interested .=
-				'<h4>{$lang.properties_view_sorry}</h4>
-				 <h4>{$lang.properties_view_been} ' . $status . '</h4>';
-			}
-
-			if ($property['subcategory'] == '1')
-				$subcategory = '{$lang.presale}';
-			else if ($property['subcategory'] == '2')
-				$subcategory = '{$lang.resale}';
-			else if ($property['subcategory'] == '3')
-				$subcategory = '{$lang.lots}';
 
 			$replace = [
-				'{$locationsList}' => $locationsList,
-				'{$cover}' => '{$path.images}' . $property['cover'],
-				'{$title}' => $property['title'],
-				'{$location}' => $location['title'],
-				'{$imagesList}' => $imagesList,
-				'{$description}' => html_entity_decode(json_decode($property['description'], true)[$this->lang]),
-				'{$category}' => !empty($category) ? json_decode($category['title'], true)[$this->lang] : '',
-				'{$subcategory}' => $subcategory,
-				'{$price}' => number_format($property['price'], 2, '.', ','),
-				'{$coin}' => $property['coin'],
-				'{$delivery}' => json_decode($property['delivery'], true)[$this->lang],
-				'{$type}' => ($property['multiple'] == true OR $property['status'] == '1') ? $type : $status,
-				'{$status}' => $status,
-				'{$interested}' => $interested,
-				'{$share}' => 'https://www.propiedadesventatulum.com/properties/view/' . $id,
-				'{$seo_description}' => $property['seo_description'],
-				'{$seo_keywords}' => $property['seo_keywords']
+				'{$background}' => $property['background'],
+				'{$name}' => json_decode($property['name'], true)[$this->lang],
+				'{$location}' => json_decode($property['location'], true)[$this->lang],
+				'{$category}' => json_decode($property['category'], true)[$this->lang],
+				'{$featured}' => ($property['priority'] >= 1) ? '<span class="right bookmark"><i class="material-icons">grade</i>{$lang.property-featured}</span>' : '',
+				'{$description}' => json_decode($property['description'], true)[$this->lang],
+				'{$lst_details}' => $lst_details,
+				'{$lst_gallery_images}' => $lst_gallery_images,
+				'{$lat}' => json_decode($property['map'], true)['lat'],
+				'{$lng}' => json_decode($property['map'], true)['lng'],
+				'{$facebook}' => $social_media['facebook'],
+				'{$instagram}' => $social_media['instagram']
 			];
 
 			$template = $this->format->replace($replace, $template);

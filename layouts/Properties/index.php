@@ -1,73 +1,94 @@
-<?php
-defined('_EXEC') or die;
-$this->dependencies->getDependencies([
-    'css' => [
-        '{$path.plugins}chosen-select/chosen.css" type="text/css'
-    ],
-    'js' => [
-        '{$path.js}properties.js',
-        '{$path.plugins}chosen-select/chosen.jquery.js'
-    ],
-    'other' => [
-        '<script>$(function() { $(".chosen-select").chosen(); });</script>'
-    ]
-]);
+<?php defined('_EXEC') or die;
+
+/**
+* @package valkyrie.layouts.properties
+*
+* @author Irving Martinez Santiago <Chief Software Development Officer, imartinez@codemonkey.com.mx>
+* @since October 17, 2018 <1.0.0> <@create>
+* @version 1.0.0
+* @summary create layout properties
+*
+* @author Alejandro Fernando Cabrera Contreras <Developer, acabrera@codemonkey.com.mx>
+* @since October 29, 2018 <1.0.0> <@update>
+* @version 1.0.0
+* @summary Uso de multilenguaje
+*
+* @copyright Copyright (C) Code Monkey S de RL <contact@codemonkey.com.mx, wwww.codemonkey.com.mx>. Todos los derechos reservados.
+*/
+
+$this->dependencies->add(['css', '']);
+$this->dependencies->add(['js', '{$path.js}pages/properties.min.js']);
+$this->dependencies->add(['other', '']);
+
 ?>
-<header class="main-header">
-    %{header}%
-</header>
-<section class="properties-background" data-image-src="{$background_property}">
-    <div class="content">
+
+%{header}%
+<section class="home white">
+    <figure>
+        <img src="{$path.images}backgrounds/{$background}" alt="Properties cover">
+    </figure>
+    <aside>
         <h1>{$title}</h1>
-    </div>
+    </aside>
 </section>
-<section id="properties">
+<section class="properties">
     <div class="container">
-        <div class="buttons-order">
-            <a href="/properties">{$lang.btn_view_all}</a>
-            <a href="" data-order="list"><i class="material-icons">view_list</i></a>
-            <a href="" class="view" data-order="module"><i class="material-icons">view_module</i></a>
-        </div>
-    </div>
-    <div class="container">
-        <aside class="filter">
-            <div class="group">
-                <h6>{$lang.search}</h6>
-                <select name="search" class="chosen-select">
-                    <option value="">{$lang.all}</option>
-                    {$optProyects}
-                </select>
-            </div>
-            <form name="form-filters">
-                <div class="group">
-                    <h6>{$lang.properties_filter_by}:</h6>
-                    <div class="hidden">
-                        <h6>{$lang.properties_filter_by_price_low_height}</h6>
-                        <label><input type="radio" name="filter" value="low_price"/> {$lang.properties_filter_by_price_low}</label>
-                        <label><input type="radio" name="filter" value="high_price"/> {$lang.properties_filter_by_price_height}</label>
-                    </div>
-                </div>
-                <div class="group">
-                    <h6>{$lang.properties_filter_location}</h6>
-                    {$filter_locations}
-                </div>
-                <div class="group">
-                    <h6>{$lang.properties_filter_by_price}</h6>
-                    <input type="number" name="price_from" placeholder="$" />
-                    <h6 class="text-center">{$lang.properties_filter_by_price_to}</h6>
-                    <input type="number" name="price_to" placeholder="$" />
-                </div>
-                <div class="group">
-                    <h6>{$lang.properties_filter_type}</h6>
-                    <label><input type="radio" name="type" value="rent"/> {$lang.properties_filter_by_type_rent}</label>
-                    <label><input type="radio" name="type" value="sell"/> {$lang.properties_filter_by_type_sell}</label>
-                </div>
-                <button class="btn md--btn-flat md--btn-raised md--btn-block" type="submit" data-ripple>{$lang.properties_btn_filter}</button>
-            </form>
+        <form name="filter" class="row">
+            <fieldset class="input-group">
+                <label data-important>
+                    <span>{$lang.location}</span>
+                    <select name="location">
+                        <option value="all">{$lang.all}</option>
+                        {$lst_locations}
+                    </select>
+                </label>
+            </fieldset>
+            <fieldset class="input-group">
+                <label data-important>
+                    <span>{$lang.category}</span>
+                    <select name="category">
+                        <option value="all">{$lang.all}</option>
+                        {$lst_categories}
+                    </select>
+                </label>
+            </fieldset>
+            <fieldset class="input-group">
+                <label data-important>
+                    <span>{$lang.price}</span>
+                    <select name="price">
+                        <option value="all">{$lang.all}</option>
+                        <option value="rank">{$lang.price_rank}</option>
+                    </select>
+                </label>
+            </fieldset>
+            <fieldset class="input-group span6 padding-right-5 hidden">
+                <label data-important>
+                    <input type="number" name="price_from" placeholder="$ {$lang.from}">
+                </label>
+            </fieldset>
+            <fieldset class="input-group span6 hidden">
+                <label data-important>
+                    <input type="number" name="price_to" placeholder="$ {$lang.to}">
+                </label>
+            </fieldset>
+            <fieldset class="input-group">
+                <label data-important>
+                    <span>{$lang.type}</span>
+                    <select name="type">
+                        <option value="all">{$lang.all}</option>
+                        <option value="sale">{$lang.sale}</option>
+                        <option value="rent">{$lang.rent}</option>
+                    </select>
+                </label>
+            </fieldset>
+            <fieldset class="input-group">
+                <a href="" class="btn btn-colored" data-action="filter">{$lang.filter}</a>
+            </fieldset>
+        </form>
+        <aside id="filter">
+            {$lst_properties}
+            <div class="clear"></div>
         </aside>
-        <section class="list">
-            {$items}
-        </section>
         <div class="clear"></div>
     </div>
 </section>

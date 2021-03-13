@@ -1,4 +1,21 @@
-<?php defined('_EXEC') or die;
+<?php
+
+defined('_EXEC') or die;
+
+/**
+* @package valkyrie.core.models
+*
+* @author Gersón Aarón Gómez Macías <Chief Technology Officer, ggomez@codemonkey.com.mx>
+* @since August 18, 2018 <1.0.0> <@create>
+* @version 1.0.0
+* @summary cm-valkyrie-platform-website-template
+*
+* @author Alejandro Fernando Cabrera Contreras <Developer, acabrera@codemonkey.com.mx>
+* @since October 24, 2018 <1.0.0> <@update>
+* @summary Datos dinámico de titulo y background
+*
+* @copyright Copyright (C) Code Monkey S de RL <contact@codemonkey.com.mx, wwww.codemonkey.com.mx>. Todos los derechos reservados.
+*/
 
 class Contact_model extends Model
 {
@@ -7,61 +24,34 @@ class Contact_model extends Model
 		parent::__construct();
 	}
 
-	public function getMetadata()
+	/* Selects
+	------------------------------------------------------------------------------- */
+	public function get_contact()
 	{
-		$response = $this->database->select('metadata', [
-			'description',
-			'keywords'
-		], [
-			'ORDER' => 'id_metadata DESC',
-			'LIMIT' => 1
+		$query = $this->database->select('contact', '*');
+		return !empty($query) ? $query[0] : null;
+	}
+
+	public function get_settings()
+	{
+		$query = $this->database->select('settings', [
+			'titles',
+			'backgrounds'
 		]);
 
-		if ( isset($response[0]) && !empty($response[0]) )
-			return $response[0];
-		else
-			return null;
+		return !empty($query[0]) ? $query[0] : null;
 	}
 
-	public function getConfigurations()
-    {
-      $query = $this->database->select('general_configurations', '*', ['id_configuration' => 1]);
-      return $query[0];
-    }
+	/* Inserts
+	------------------------------------------------------------------------------- */
 
-	public function getContact()
-	{
-		$query = $this->database->select('general_configurations', '*');
-		return $query[0];
-	}
+	/* Updates
+	------------------------------------------------------------------------------- */
 
-	public function sendEmail($subject, $html, $to, $from)
-	{
-		$this->component->loadComponent('phpmailer');
+	/* Deletes
+	------------------------------------------------------------------------------- */
 
-		send_email(
-			[
-				$to[0] => $to[1]
-			],
-			[
-				$from[0],
-				$from[1]
-			],
-			FALSE,
-			FALSE,
-			FALSE,
-			FALSE,
-			$subject,
-			$html,
-			FALSE
-		);
-	}
+	/* Others
+	------------------------------------------------------------------------------- */
 
-	/*
-	/* --------------------------------------------------------------------------- */
-	public function getLocations()
-	{
-		$query = $this->database->select('properties_locations', '*');
-		return $query;
-	}
 }

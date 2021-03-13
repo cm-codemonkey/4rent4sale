@@ -1,4 +1,17 @@
-<?php defined('_EXEC') or die;
+<?php
+
+defined('_EXEC') or die;
+
+/**
+* @package valkyrie.core.controllers
+*
+* @author Gersón Aarón Gómez Macías <Chief Technology Officer, ggomez@codemonkey.com.mx>
+* @since August 18, 2018 <1.0.0> <@create>
+* @version 1.0.0
+* @summary cm-valkyrie-platform-website-template
+*
+* @copyright Copyright (C) Code Monkey S de RL <contact@codemonkey.com.mx, wwww.codemonkey.com.mx>. Todos los derechos reservados.
+*/
 
 class Contact_controller extends Controller
 {
@@ -7,177 +20,131 @@ class Contact_controller extends Controller
 	public function __construct()
 	{
 		parent::__construct();
-		$this->lang = $_COOKIE['lang'];
+		$this->lang = Session::get_value('lang');
 	}
 
+	/*
+	* @author Alejandro Fernando Cabrera Contreras <Developer, acabrera@codemonkey.com.mx>
+	* @since October 25, 2018 <1.0.0> <@update>
+	* @summary Datos dinámico de titulo y background
+	*/
+	/*
+	* @author Julian Alberto Canche Dzib <Software Development, jcanche@codemonkey.com.mx>
+	* @since October 25, 2018 <1.0.0> <@update>
+	* @summary Funcionalidad del email.
+	*/
+
+	/* Ajax: Sending contant email
+	** Render: Contact page
+	------------------------------------------------------------------------------- */
 	public function index()
 	{
-		if (Format::existAjaxRequest() == true)
+		$contact = $this->model->get_contact();
+
+		if (Format::exist_ajax_request() == true)
 		{
-			$name 			= isset($_POST['name']) ? $_POST['name'] : '';
-			$lastname 		= isset($_POST['lastname']) ? $_POST['lastname'] : '';
-			$email 			= isset($_POST['email']) ? $_POST['email'] : '';
-			$phone			= isset($_POST['phone']) ? $_POST['phone'] : '';
-			$country		= isset($_POST['country']) ? $_POST['country'] : '';
-			$mailMessage	= isset($_POST['message']) ? $_POST['message'] : '';
+			$fullname = (isset($_POST['fullname']) AND !empty($_POST['fullname'])) ? $_POST['fullname'] : null;
+			$email = (isset($_POST['email']) AND !empty($_POST['email'])) ? $_POST['email'] : null;
+			$phone = (isset($_POST['phone']) AND !empty($_POST['phone'])) ? $_POST['phone'] : null;
+			$message = (isset($_POST['message']) AND !empty($_POST['message'])) ? $_POST['message'] : null;
 
-			if (empty($mailMessage))
-				$message = 'Ingrese un mensaje';
+			$errors = [];
 
-			if (empty($country))
-				$message = 'Ingrese el paí­s';
+			if (!isset($fullname))
+				array_push($errors, ['fullname', '{$lang.dont_leave_this_field_empty}']);
 
-			if (empty($phone))
-				$message = 'Ingrese el telefono';
+			if (!isset($email))
+				array_push($errors, ['email', '{$lang.dont_leave_this_field_empty}']);
+			else if (Functions::check_email($email) == false)
+				array_push($errors, ['email', '{$lang.invalid_email}']);
 
-			if (Security::checkMail($email) == false)
-				$message = 'E-mail incorrecto';
-
-			if (empty($email))
-				$message = 'Ingrese su correo electrónico';
-
-			if (empty($lastname))
-				$message = 'Ingrese su apellido';
-
-			if (empty($name))
-				$message = 'Ingrese su nombre';
+			if (!isset($phone))
+				array_push($errors, ['phone', '{$lang.dont_leave_this_field_empty}']);
+			else if (!is_numeric($phone))
+				array_push($errors, ['phone', '{$lang.enter_only_numbers}']);
+			else if ($phone < 0)
+				array_push($errors, ['phone', '{$lang.dont_enter_negative_numbers}']);
+			else if (strlen($phone) != 10)
+				array_push($errors, ['phone', '{$lang.invalid_number}']);
+			else if (Functions::check_number($phone, 'is_float') == true)
+				array_push($errors, ['phone', '{$lang.dont_enter_decimal_numbers}']);
+			else if (Functions::check_number($phone, 'exist_spaces') == true)
+				array_push($errors, ['phone', '{$lang.dont_enter_spaces}']);
 
 			if (!isset($message))
+				array_push($errors, ['message', '{$lang.dont_leave_this_field_empty}']);
+
+			if (empty($errors))
 			{
-				$contact = $this->model->getContact();
-				$contact = json_decode($contact['contact_us'], true);
+				$header_mail  = 'MIME-Version: 1.0' . "\r\n";
+			    $header_mail .= 'Content-type: text/html; charset=utf-8' . "\r\n";
+			    $header_mail .= 'From: Valkyrie <contacto@valkyrie.com>' . "\r\n";
 
-				$mail1 = new Mailer(true);
+				if ($this->lang == 'es')
+					$subject_mail = '¡Gracias por ponerte en contacto con nosotros!';
+				else if ($this->lang == 'en')
+					$subject_mail = '¡Thank you for contacting us!';
 
-				try {
+				$body_mail =
+				'<html>
+					<head>
+						<title>' . $subject_mail . '</title>
+					</head>
+					<body>
+						<article style="width:600px;padding:20px;box-sizing:border-box;background-color:#eee;">
+						    <header style="width:100%;padding:40px;box-sizing:border-box;border-bottom:1px solid #eee;background-color:#616161;">
+						        <figure style="width:520px;padding:0px;margin:0px;overflow:hidden;text-align:center;">
+						            <img style="height: 50px;" src="https://codemonkey.com.mx/images/codemonkey-logo-1-white.png" alt="Logotype" />
+						        </figure>
+						    </header>
+						    <aside style="width:100%;padding:40px;box-sizing:border-box;background-color:#fff;">
+						        <h4 style="margin:0px;margin-bottom:10px;padding:0px;font-size:18px;font-weight:600;color:#757575;">' . $fullname . '</h4>
+						        <h6 style="margin:0px;margin-bottom:30px;padding:0px;font-size:14px;font-weight:300;color:#757575;">' . $email . ' ' . $phone . '</h6>
+						        <p style="margin:0px;margin-bottom:30px;padding:0px;font-size:14px;font-weight:300;text-align:justify;color:#757575;">' . $message . '</p>
+						        <p style="margin:0px;padding:0px;font-size:14px;font-weight:300;text-align:justify;color:#757575;">' . $subject_mail . '</p>
+						    </aside>
+						    <footer style="width:100%;padding:40px;box-sizing:border-box;border-top:1px solid #eee;background-color:#fff;">
+						        <a style="margin:0px;padding:0px;font-size:14px;font-weight:300;text-align:center;color:#757575;">www.codemonkey.com.mx</a>
+						    </footer>
+						 </article>
+					 </body>
+				</html>';
 
-					if ($this->lang == 'es')
-					{
-						$subject1 = 'Gracias por contactarnos';
-						$html1  = '<div style="width:100%;padding:30px;box-sizing:border-box;background-color:#F1F1F1;">';
-						$html1 .= '	<div style="width:100%;padding:50px 0px;box-sizing:border-box;background-color:#f44336;">';
-						$html1 .= '		<div style="width:200px;height:auto;display:flex;align-items:center;justify-content:center;margin:auto;">';
-						$html1 .= '			<div style="width:auto;height:auto;float:none;box-sizing:border-box;">';
-						$html1 .= '				<img src="https://propiedadesventatulum.com/images/logo-living-tulum-white.png" style="border:0;width:auto;height:100px;" />';
-						$html1 .= '			</div>';
-						$html1 .= '			<div style="clear:both;display:block;overflow:hidden;visibility:hidden;width:0;height:0;"></div>';
-						$html1 .= '		</div>';
-						$html1 .= '	</div>';
-						$html1 .= '	<div style="width:100%;padding:100px 40px;box-sizing:border-box;background-color:#fff;">';
-						$html1 .= '		<p style="font-size:14px;font-weight:100;text-align:center;text-transform:uppercase;line-height: 30px;color:#000;">' . $name . ' ' . $lastname .'</p>';
-						$html1 .= '		<p style="font-size:14px;font-weight:100;text-align:center;text-transform:uppercase;line-height: 30px;color:#000;">Gracias por contactarnos. En breve uno de nuestros asesores se pondrá en contacto contigo para mayor información.</p>';
-						$html1 .= '		<p style="font-size:14px;font-weight:600;text-align:center;margin-top:100px;color:#000;">Saludos desde el paraíso - 4Rent 4Sale Riviera Maya Realty</p>';
-						$html1 .= '		<p style="font-size:14px;font-weight:600;text-align:center;text-transform:lowercase;color:#000;">www.propiedadesventatulum.com</p>';
-						$html1 .= '	</div>';
-						$html1 .= '	<div style="width:100%;height:auto;text-align:center;align-items:center;justify-content:center;">';
-						$html1 .= '		<p style="font-size:14px;font-weight:600;text-align:center;color:#000;">También puedes seguirnos en nuestras redes sociales</p>';
-						$html1 .= '		<a href="https://www.facebook.com/Living-Tulum-Realty-264536504074968/?fref=ts"><img src="http://www.freeiconspng.com/uploads/facebook-logo-png--impending-10.png"  style="border:0;width:auto;height:50px;"/></a>';
-						$html1 .= '		<a href="https://twitter.com/livingtulum"><img src="http://pluspng.com/img-png/twitter-png-logo--512.png"  style="border:0;width:auto;height:50px;"/></a>';
-						$html1 .= '		<a href="https://www.instagram.com/livingtulumrealty/"><img src="http://pngimg.com/uploads/instagram/instagram_PNG9.png"  style="border:0;width:auto;height:50px;"/></a>';
-						$html1 .= '	</div>';
-						$html1 .= '</div>';
-					}
-					else if ($this->lang == 'en')
-					{
-						$subject1 = 'Thanks for contact us';
-						$html1  = '<div style="width:100%;padding:30px;box-sizing:border-box;background-color:#F1F1F1;">';
-						$html1 .= '	<div style="width:100%;padding:50px 0px;box-sizing:border-box;background-color:#f44336;">';
-						$html1 .= '		<div style="width:200px;height:auto;display:flex;align-items:center;justify-content:center;margin:auto;">';
-						$html1 .= '			<div style="width:auto;height:auto;float:none;box-sizing:border-box;">';
-						$html1 .= '				<img src="https://propiedadesventatulum.com/images/logo-living-tulum-white.png" style="border:0;width:auto;height:100px;" />';
-						$html1 .= '			</div>';
-						$html1 .= '			<div style="clear:both;display:block;overflow:hidden;visibility:hidden;width:0;height:0;"></div>';
-						$html1 .= '		</div>';
-						$html1 .= '	</div>';
-						$html1 .= '	<div style="width:100%;padding:100px 40px;box-sizing:border-box;background-color:#fff;">';
-						$html1 .= '		<p style="font-size:14px;font-weight:100;text-align:center;text-transform:uppercase;line-height: 30px;color:#000;">' . $name . ' ' . $lastname .'</p>';
-						$html1 .= '		<p style="font-size:14px;font-weight:100;text-align:center;text-transform:uppercase;line-height: 30px;color:#000;">Thanks for contact us. Shortly one of our consultants will contact you for more information.</p>';
-						$html1 .= '		<p style="font-size:14px;font-weight:600;text-align:center;margin-top:100px;color:#000;">Greetins from paradise - 4Rent 4Sale Riviera Maya Realty</p>';
-						$html1 .= '		<p style="font-size:14px;font-weight:600;text-align:center;text-transform:lowercase;color:#000;">www.propiedadesventatulum.com</p>';
-						$html1 .= '	</div>';
-						$html1 .= '	<div style="width:100%;height:auto;text-align:center;align-items:center;justify-content:center;">';
-						$html1 .= '		<p style="font-size:14px;font-weight:600;text-align:center;color:#000;">You can also follow us on our social networks</p>';
-						$html1 .= '		<a href="https://www.facebook.com/Living-Tulum-Realty-264536504074968/?fref=ts"><img src="http://www.freeiconspng.com/uploads/facebook-logo-png--impending-10.png"  style="border:0;width:auto;height:50px;"/></a>';
-						$html1 .= '		<a href="https://twitter.com/livingtulum"><img src="http://pluspng.com/img-png/twitter-png-logo--512.png"  style="border:0;width:auto;height:50px;"/></a>';
-						$html1 .= '		<a href="https://www.instagram.com/livingtulumrealty/"><img src="http://pngimg.com/uploads/instagram/instagram_PNG9.png"  style="border:0;width:auto;height:50px;"/></a>';
-						$html1 .= '	</div>';
-						$html1 .= '</div>';
-					}
-
-					$mail1->setFrom('noreply@propiedadesventatulum.com', '4Rent 4Sale Riviera Maya Realty');
-					$mail1->addAddress($email, $name . ' ' . $lastname);
-					$mail1->Subject = $subject1;
-					$mail1->Body = $html1;
-					$mail1->send();
-
-				} catch (Exception $e) { }
-
-				$mail2 = new Mailer(true);
-
-				try {
-
-					$mail2->setFrom($email, $name . ' ' . $lastname);
-					$mail2->addAddress($contact['email'], '4Rent 4Sale Riviera Maya Realty');
-					$mail2->Subject = 'Nuevo contacto';
-					$mail2->Body  = '<div style="width:100%;padding:30px;box-sizing:border-box;background-color:#F1F1F1;">';
-					$mail2->Body .= '	<div style="width:100%;padding:100px 40px;box-sizing:border-box;background-color:#fff;">';
-					$mail2->Body .= '		<p style="font-size:14px;font-weight:100;text-align:center;text-transform:uppercase;line-height: 30px;color:#000;">Cliente: ' . $name . ' ' . $lastname . '</p>';
-					$mail2->Body .= '		<p style="font-size:14px;font-weight:100;text-align:center;text-transform:uppercase;line-height: 30px;color:#000;">Correo electrónico: ' . $email . '</p>';
-					$mail2->Body .= '		<p style="font-size:14px;font-weight:100;text-align:center;text-transform:uppercase;line-height: 30px;color:#000;">País: ' . $country . ' Teléfono: ' . $phone . '</p>';
-					$mail2->Body .= '		<p style="font-size:14px;font-weight:100;text-align:center;text-transform:uppercase;line-height: 30px;color:#000;">Mensaje: ' . $mailMessage . '</p>';
-					$mail2->Body .= '		<p style="font-size:14px;font-weight:100;text-align:center;text-transform:uppercase;line-height: 30px;color:#000;">Idioma: ' . (($this->lang == 'es') ? 'Español' : 'Ingles') . '</p>';
-					$mail2->Body .= '	</div>';
-					$mail2->Body .= '</div>';
-					$mail2->send();
-
-				} catch (Exception $e) { }
+			    mail($contact['email'], $subject_mail, $body_mail, $header_mail);
+			    mail($email, $subject_mail, $body_mail, $header_mail);
 
 				echo json_encode([
 					'status' => 'success',
-					'message' => '{$lang.success}'
+					'message' => $subject_mail
 				]);
 			}
 			else
 			{
 				echo json_encode([
 					'status' => 'error',
-					'message' => $message
+					'labels' => $errors
 				]);
 			}
 		}
 		else
 		{
-			define('_title', '{$lang.contact} | 4Rent 4Sale Riviera Maya Realty');
+			define('_title', '{$lang.contact_us} | {$lang.title}');
 
 			$template = $this->view->render($this, 'index');
-			$template = $this->format->replaceFile($template, 'header');
 
-			$locations	= $this->model->getLocations();
-			$configurations = $this->model->getConfigurations();
+			$settings = $this->model->get_settings();
 
-			$contact_us	= json_decode($configurations['contact_us'], true);
-			$configurations = json_decode($configurations['cover_contact'], true);
-
-			$locationsList	= '';
-
-			foreach ($locations as $location)
-			{
-				$locationsList .=
-				'<a href="/properties?locations=' . str_replace(' ','_',strtolower($location['title'])) . '" data-ripple>' . $location['title'] . '</a>';
-			}
-
-			$seo = $this->model->getMetadata();
+			$titles = json_decode($settings['titles'], true);
+			$backgrounds = json_decode($settings['backgrounds'], true);
+			$social_media = json_decode($contact['social_media'], true);
 
 			$replace = [
-				'{$locationsList}' => $locationsList,
-				'{$contact_us_phone}' => $contact_us['phone'],
-				'{$contact_us_email}' =>  $contact_us['email'],
-				'{$contact_us_address}' =>  $contact_us['address'],
-				'{$background_contact}' => !empty($configurations['background_contact']) ? '{$path.images}' . $configurations['background_contact'] : '{$path.images}empty-image.jpg',
-				'{$title}' => $configurations['title_contact_' . $this->lang],
-				'{$subtitle}' => $configurations['subtitle_contact_' . $this->lang],
-				'{$seo_description}' => $seo['description'],
-				'{$seo_keywords}' => $seo['keywords']
+				'{$title}' => $titles['contact'][$this->lang],
+				'{$background}' => $backgrounds['backgrounds']['contact_us'],
+				'{$email}' => $contact['email'],
+				'{$phone}' => $contact['phone'],
+				'{$facebook}' => $social_media['facebook'],
+				'{$instagram}' => $social_media['instagram']
 			];
 
 			$template = $this->format->replace($replace, $template);

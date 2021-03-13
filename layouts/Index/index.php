@@ -1,165 +1,140 @@
 <?php defined('_EXEC') or die;
-$this->dependencies->getDependencies([
-    'css' => [
-		'{$path.plugins}owl-carousel/owl.carousel.min.css',
-		'{$path.plugins}owl-carousel/owl.theme.default.min.css'
-	],
-    'js' => [
-        '{$path.js}index.js',
-		'{$path.plugins}owl-carousel/owl.carousel.min.js',
-	],
-    'other' => [
-		'<script defer type="text/javascript">
-			$(document).ready(function()
-            {
-                $("#properties-carousel").owlCarousel(
-                {
-                    items:1,
-                    autoplay:false,
-                    autoplayTimeout:6000,
-                    loop:true
-                });
 
-				$("#comments-carousel").owlCarousel(
-                {
-                    items:1,
-                    autoplay:true,
-                    autoplayTimeout:15000,
-                    loop:true
-				});
+/**
+* @package valkyrie.layouts.index
+*
+* @author Gersón Aarón Gómez Macías <Chief Technology Officer, ggomez@codemonkey.com.mx>
+* @since August 18, 2018 <1.0.0> <@create>
+* @version 1.0.0
+* @summary cm-valkyrie-platform-website-template
+*
+* @author Irving Martinez Santiago <Chief Software Development Officer, imartinez@codemonkey.com.mx>
+* @since October 15, 2018 <1.0.0> <@update>
+* @summary Integración de la maquetación del sitio Web.
+*
+* @author Julian Alberto Canche Dzib <Development, jcanche@codemonkey.com.mx>
+* @since October 16, 2018 <1.0.0> <@update>
+* @summary Integración de la sección de magazine.
+*
+* @author Alejandro Fernando Cabrera Contreras <Developer, acabrera@codemonkey.com.mx>
+* @since October 24, 2018 - October 25, 2018 <1.0.0> <@update>
+* @version 1.0.0
+* @summary Datos dinámico de categories. Datos dinámico de titulo y background.
+*
+* @author Gersón Aarón Gómez Macías <, ggomez@codemonkey.com.mx>
+* @since October 30, 2018 <1.0.0> <@update>
+* @version 1.0.0
+* @summary La sección del mapa se paso abajo de la sección de categorías. Se corrigieron errores de estructura y prorgramación.
+*
+* @copyright Copyright (C) Code Monkey S de RL <contact@codemonkey.com.mx, wwww.codemonkey.com.mx>. Todos los derechos reservados.
+*/
 
-                var owl = $(".owl-carousel");
-                    owl.owlCarousel();
+$this->dependencies->add(['css', '{$path.plugins}owlcarousel/assets/owl.carousel.min.css']);
+$this->dependencies->add(['css', '{$path.plugins}owlcarousel/assets/owl.theme.default.min.css']);
+$this->dependencies->add(['js', '{$path.js}pages/index.min.js']);
+$this->dependencies->add(['js', '{$path.plugins}owlcarousel/owl.carousel.min.js']);
+$this->dependencies->add(['other', '
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBLCea8Q6BtcTHwY3YFCiB0EoHE5KnsMUE&callback=initMap"></script>
+<script type="text/javascript">
 
-                $("#left").on("click", function()
-                {
-                    owl.trigger("prev.owl.carousel");
-                });
 
-                $("#right").on("click", function()
-                {
-                    owl.trigger("next.owl.carousel");
-                });
+</script>
+']);
 
-                $("#carousel-button-left,#comments-carousel-button-left").on("click", function()
-                {
-                    owl.trigger("prev.owl.carousel");
-                });
-
-                $("#carousel-button-right,#comments-carousel-button-right").on("click", function()
-                {
-                    owl.trigger("next.owl.carousel");
-                });
-			});
-		</script>'
-	]
-]);
 ?>
-<header class="main-header">
-    %{header}%
-</header>
-<section class="home-background" data-image-src="{$background}">
-    <div class="content">
+
+%{header}%
+<section class="home">
+    <div id="slideshow" class="owl-carousel owl-theme">
+        {$lst_slideshow}
+    </div>
+    <aside>
         <h1>{$title} <span>{$subtitle}</span></h1>
-    </div>
+    </aside>
 </section>
-<section id="choose_us">
+<section class="categories">
     <div class="container">
-        <h4>{$lang.index_why_choose_us}</h4>
-        <div class="span2">
-            <figure>
-              <img src="{$path.images}icon-1.png" alt="" />
-              <p>{$lang.index_why_choose_us_1}</p>
-            </figure>
-        </div>
-        <div class="span2">
-            <figure>
-              <img src="{$path.images}icon-2.png" alt="" />
-              <p>{$lang.index_why_choose_us_2}</p>
-            </figure>
-        </div>
-        <div class="span2">
-          <figure>
-              <img src="{$path.images}icon-3.png" alt="" />
-              <p>{$lang.index_why_choose_us_3}</p>
-          </figure>
-        </div>
-        <div class="span2">
-          <figure>
-              <img src="{$path.images}icon-4.png" alt="" />
-              <p>{$lang.index_why_choose_us_4}</p>
-          </figure>
-        </div>
-        <div class="span2">
-          <figure>
-              <img src="{$path.images}icon-5.png" alt="" />
-              <p>{$lang.index_why_choose_us_5}</p>
-          </figure>
-        </div>
+        {$lst_categories}
         <div class="clear"></div>
     </div>
 </section>
-{$imagesList}
-<section id="choose_us">
-    <div class="container">
-        <h4>{$lang.index_why_choose_us}</h4>
-        <div class="span2">
-            <figure>
-              <img src="{$path.images}icon-1.png" alt="" />
-              <p>{$lang.index_why_choose_us_1}</p>
-            </figure>
-        </div>
-        <div class="span2">
-            <figure>
-              <img src="{$path.images}icon-2.png" alt="" />
-              <p>{$lang.index_why_choose_us_2}</p>
-            </figure>
-        </div>
-        <div class="span2">
-          <figure>
-              <img src="{$path.images}icon-3.png" alt="" />
-              <p>{$lang.index_why_choose_us_3}</p>
-          </figure>
-        </div>
-        <div class="span2">
-          <figure>
-              <img src="{$path.images}icon-4.png" alt="" />
-              <p>{$lang.index_why_choose_us_4}</p>
-          </figure>
-        </div>
-        <div class="span2">
-          <figure>
-              <img src="{$path.images}icon-5.png" alt="" />
-              <p>{$lang.index_why_choose_us_5}</p>
-          </figure>
-        </div>
-        <div class="clear"></div>
-    </div>
-</section>
-<section id="blog-home" class="blog">
-    <div class="container">
-        <div class="row">
-          {$entriesList}
-        </div>
-    </div>
-</section>
-<section class="comments-carousel">
-    <div class="container">
-        <div id="comments-carousel" class="owl-carousel">
-            {$commentsList}
-        </div>
-    </div>
-	<a href="" id="carousel-button-left"><i class="material-icons">keyboard_arrow_left</i></a>
-	<a href="" id="carousel-button-right"><i class="material-icons">keyboard_arrow_right</i></a>
-</section>
-<section class="subscribe">
-    <form name="subscribe">
-        <p>{$lang.subscribe}</p>
-        <input type="text" name="name" placeholder="{$lang.subscribe_name_placeholder}">
-        <input type="email" name="email" placeholder="{$lang.subscribe_placeholder}">
-        <a href="" data-action="subscribe">{$lang.subscribe}</a>
+<section class="map">
+    <form name="filter" class="row">
+        <fieldset class="input-group">
+            <label data-important>
+                <span>{$lang.location}</span>
+                <select name="location">
+                    <option value="all">{$lang.all}</option>
+                    {$lst_f_locations}
+                </select>
+            </label>
+        </fieldset>
+        <fieldset class="input-group">
+            <label data-important>
+                <span>{$lang.category}</span>
+                <select name="category">
+                    <option value="all">{$lang.all}</option>
+                    {$lst_f_categories}
+                </select>
+            </label>
+        </fieldset>
+        <fieldset class="input-group">
+            <label data-important>
+                <span>{$lang.price}</span>
+                <select name="price">
+                    <option value="all">{$lang.all}</option>
+                    <option value="rank">{$lang.price_rank}</option>
+                </select>
+            </label>
+        </fieldset>
+        <fieldset class="input-group span6 padding-right-5 hidden">
+            <label data-important>
+                <input type="number" name="price_from" placeholder="$ {$lang.from}">
+            </label>
+        </fieldset>
+        <fieldset class="input-group span6 hidden">
+            <label data-important>
+                <input type="number" name="price_to" placeholder="$ {$lang.to}">
+            </label>
+        </fieldset>
+        <fieldset class="input-group">
+            <label data-important>
+                <span>{$lang.type}</span>
+                <select name="type">
+                    <option value="all">{$lang.all}</option>
+                    <option value="sale">{$lang.sale}</option>
+                    <option value="rent">{$lang.rent}</option>
+                </select>
+            </label>
+        </fieldset>
+        <fieldset class="input-group">
+            <a href="" class="btn btn-colored" data-action="filter">{$lang.filter}</a>
+        </fieldset>
     </form>
-    <div class="error">
-        <p class="error"></p>
+    <div id="map"></div>
+</section>
+<section class="magazine home">
+    <div class="container">
+        {$lst_magazine_articles}
+        <div class="clear"></div>
     </div>
+</section>
+<section class="subscription" data-image-src="{$path.images}backgrounds/{$background}">
+    <form name="subscription">
+        <h4><strong>¡{$lang.subscribe}!</strong></h4>
+        <p>{$lang.to_receive_information}</p>
+        <fieldset class="input-group">
+            <label>
+                <span>{$lang.fullname}</span>
+                <input type="text" name="fullname">
+            </label>
+        </fieldset>
+        <fieldset class="input-group">
+            <label>
+                <span>{$lang.email}</span>
+                <input type="text" name="email">
+            </label>
+        </fieldset>
+        <a class="btn btn-colored" data-action="subscription">{$lang.subscribe}</a>
+    </form>
 </section>
