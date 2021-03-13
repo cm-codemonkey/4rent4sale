@@ -146,7 +146,7 @@ class Configuration
 	 *
      * @var string $db_name
      */
-	public static $db_name = '4rent4sale_v2';
+	public static $db_name = '4rent4salev2';
 
 	/**
      * Usuario de la base de datos
